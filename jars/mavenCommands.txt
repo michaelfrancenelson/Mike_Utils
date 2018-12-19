@@ -1,0 +1,12 @@
+https://gist.github.com/fernandezpablo85/03cf8b0cd2e7d8527063
+https://github.com/michaelfrancenelson/MikeUtilsJava.git
+
+
+cd /cygdrive/c/github/MikeUtilsJava
+git clone https://github.com/michaelfrancenelson/MikeUtilsJava.git my-repository
+cd my-repository
+git checkout repository
+rm -rf *
+mvn install:install-file -DgroupId=michaelfrancenelson -DartifactId=MikeUtilsJava -Dversion=1.0.3 -Dfile=C:/github/MikeUtilsJava/jars/MikeUtilsJava_v1.0.2.jar -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=. -DcreateChecksum=true
+git add -A . && git commit -m "released version 1.0.3"
+git push origin repository

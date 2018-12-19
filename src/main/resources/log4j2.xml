@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+		<!-- Console Appender -->
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+
+		<Console name="ConsoleReporter" target="SYSTEM_OUT">
+			<PatternLayout pattern="%msg%n" />
+		</Console>
+		<Routing name="Routing">
+			<Routes>
+				<Script name="RoutingInit" language="JavaScript"><![CDATA[
+                    logEvent.getLevel();]]>
+				</Script>
+				<Route ref="Console" key="TRACE" />
+				<Route ref="Console" key="DEBUG" />
+				<Route ref="ConsoleReporter" key="INFO" />
+				<Route ref="Console" key="WARN" />
+				<Route ref="Console" key="ERROR" />
+				<Route ref="Console" key="FATAL" />
+			</Routes>
+		</Routing>
+	</Appenders>
+	<Loggers>
+		<Root level="INFO">
+			<AppenderRef ref="Routing" />
+		</Root>
+	</Loggers>
+</Configuration>
