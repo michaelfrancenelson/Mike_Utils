@@ -153,6 +153,16 @@ public class Sequences {
 		return out;
 	}
 	
+	
+	
+	
+	/**
+	 * 
+	 * @param intervalMins The 
+	 * @param values
+	 * @param key
+	 * @param toAdd
+	 */
 	public static void incrementInInterval(double[] intervalMins, double[] values, double key, double toAdd)
 	{
 		/* Find the index to which to add the quantity: */
@@ -342,5 +352,7 @@ public class Sequences {
 
 		return out;
 	}
+	
+	
 
 }

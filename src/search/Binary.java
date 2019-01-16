@@ -2,7 +2,6 @@ package search;
 
 public class Binary {
 
-
 	public static double TOL = 0.00001;
 
 	/** 
@@ -34,7 +33,6 @@ public class Binary {
 		return start - 1;
 	}
 
-
 	/** 
 	 * @param array1a an array1a of doubles, in ascending order.  	 
 	 * @param key Must fall within the range of values in the array1a, endpoints included.  <br>
@@ -53,7 +51,6 @@ public class Binary {
 		if (array[out + 1] == key) return out + 1;
 		return out;
 	}
-	
 	
 	/**  
 	 * @param array1a array1a of doubles, sorted ascending

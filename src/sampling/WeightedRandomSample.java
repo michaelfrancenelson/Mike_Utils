@@ -1,19 +1,18 @@
 package sampling;
 
-import org.apache.commons.rng.UniformRandomProvider;
-
+import cern.jet.random.Uniform;
 import search.Binary;
 
 /** Randomly choose elements from collections with possibly different probabilities associated with each item in the collection. */
 public class WeightedRandomSample {
 
-	/** Choose an array1a index from an array1a with the provided probability weights. <br> Weights do not need to sum to 1.
+	/** Choose an index from an array with the provided probability weights. <br> Weights do not need to sum to 1.
 	 * 
 	 * @param rg
 	 * @param weights
 	 * @return
 	 */
-	public static int sample(UniformRandomProvider rg, double[] weights)
+	public static int sample(Uniform unif, double[] weights)
 	{
 		double sum = 0.0;
 		double[] cumulativeWeights = new double[weights.length];
@@ -22,13 +21,13 @@ public class WeightedRandomSample {
 			sum += weights[i];
 			cumulativeWeights[i] = sum;
 		}
-		double key = rg.nextDouble() * sum;
+		double key = unif.nextDouble() * sum;
 		int index = Binary.indexOfLessThanKey(cumulativeWeights, key);
 		index = Binary.indexOfGreaterOrEqualToKey(cumulativeWeights, key);
 		return index;
 	}
 
-	/** Choose an array1a index from an array1a with an inverted version of the provided probability weights. <br>
+	/** Choose an index from an array with an inverted version of the provided probability weights. <br>
 	 *  Weights do not need to sum to 1. <br>
 	 *  To create the values of rhte inverse weight array1a, each weight is subtracted from the sum of the min and max elements of the original weight array1a.
 	 * 
@@ -36,7 +35,7 @@ public class WeightedRandomSample {
 	 * @param weights
 	 * @return
 	 */
-	public static int inverseSample(UniformRandomProvider rg, double[] weights)
+	public static int inverseSample(Uniform unif, double[] weights)
 	{
 		double sum = 0.0;
 		double const1 = 0.0, const2 = 0.0;
@@ -59,7 +58,7 @@ public class WeightedRandomSample {
 			cumulativeWeights[i] = sum;
 		}
 
-		double key = rg.nextDouble() * sum;
+		double key = unif.nextDouble() * sum;
 		int index = Binary.indexOfLessThanKey(cumulativeWeights, key);
 		index = Binary.indexOfGreaterOrEqualToKey(cumulativeWeights, key);
 		return index;

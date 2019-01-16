@@ -3,20 +3,25 @@ package sampling;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.simple.RandomSource;
 import org.junit.Before;
 import org.junit.Test;
+
+import cern.jet.random.Uniform;
+import cern.jet.random.engine.MersenneTwister;
+import cern.jet.random.engine.RandomEngine;
 
 public class TestWeightedRandomSample {
 
 
-	UniformRandomProvider rg;
+	RandomEngine re;
 	int seed = 12345;
+	private Uniform unif;
 
 	@Before
 	public void setup() {
-		rg = RandomSource.create(RandomSource.MT, seed); 
+		re = new MersenneTwister(seed);
+		unif = new Uniform(re);
+//		rg = RandomSource.create(RandomSource.MT, seed); 
 	}
 
 	@Test
@@ -26,7 +31,7 @@ public class TestWeightedRandomSample {
 		double[] weights = new double[] {0, 1, 0, 0};
 
 		for (int test = 0; test < 100; test++)
-			assertEquals(1, WeightedRandomSample.sample(rg, weights));
+			assertEquals(1, WeightedRandomSample.sample(unif, weights));
 
 		weights = new double[] {1, 1, 1, 1};
 		int[] counts = new int[weights.length];
@@ -37,7 +42,7 @@ public class TestWeightedRandomSample {
 		{
 			counts = new int[weights.length];
 			for (int n = 0; n < nSamples; n++)
-				counts[WeightedRandomSample.sample(rg, weights)] ++;
+				counts[WeightedRandomSample.sample(unif, weights)] ++;
 
 			int diff = Math.abs(counts[0] - expected);
 			assertTrue(diff < nSamples * 0.1);
@@ -52,7 +57,7 @@ public class TestWeightedRandomSample {
 		{
 			counts = new int[weights.length];	
 			for (int n = 0; n < nSamples; n++)
-				counts[WeightedRandomSample.sample(rg, weights)] ++;
+				counts[WeightedRandomSample.sample(unif, weights)] ++;
 			for (int i = 0; i < weights.length; i++)
 				assertEquals((double)counts[i] / nSamples, expected2[i], 0.05);
 		}
@@ -65,11 +70,11 @@ public class TestWeightedRandomSample {
 		double[] weights = new double[] {0, 1, 0, 0};
 
 		for (int test = 0; test < 100; test++)
-			assertEquals(1, WeightedRandomSample.sample(rg, weights));
+			assertEquals(1, WeightedRandomSample.sample(unif, weights));
 
 		weights = new double[] {1, 0, 1, 1};
 		for (int test = 0; test < 100; test++)
-			assertEquals(1, WeightedRandomSample.inverseSample(rg, weights));
+			assertEquals(1, WeightedRandomSample.inverseSample(unif, weights));
 
 		double[] invertedWeights = new double[weights.length];
 
@@ -86,7 +91,7 @@ public class TestWeightedRandomSample {
 		{
 			counts = new int[weights.length];	
 			for (int n = 0; n < nSamples; n++)
-				counts[WeightedRandomSample.inverseSample(rg, weights)] ++;
+				counts[WeightedRandomSample.inverseSample(unif, weights)] ++;
 
 			for (int i = 0; i < weights.length; i++)
 				assertEquals((double)(counts[i]) / (double)nSamples, (invertedWeights[i] / sum), 0.05);

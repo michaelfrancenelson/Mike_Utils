@@ -30,6 +30,26 @@ public class CSVUtils {
 		}
 	}
 	
+	
+	public static <T> void writeListToFile(List<T> list, String filePath)
+	{
+		FileWriter fw = null;
+		BufferedWriter bw;
+		try {  
+			fw = new FileWriter(filePath);
+			bw = new BufferedWriter(fw);	
+			
+			for (int i = 0; i < list.size(); i++) {  
+				bw.write("\n" + list.get(i));
+			}
+			bw.close();
+		} catch (IOException e) {  
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 	public static <T> void write2DArrayToCSV(T[][] array, String filePath) {  
 		FileWriter fw = null;
 		BufferedWriter bw;

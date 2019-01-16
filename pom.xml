@@ -10,6 +10,7 @@
 		<apache.poi.version>4.0.1</apache.poi.version>
 		<apache.commons.rng.version>1.2</apache.commons.rng.version>
 		<slf4j.version>2.11.0</slf4j.version>
+		<univocity-parsers.version>2.7.6</univocity-parsers.version>
 	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -27,6 +28,13 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<!-- https://mvnrepository.com/artifact/com.univocity/univocity-parsers -->
+			<groupId>com.univocity</groupId>
+			<artifactId>univocity-parsers</artifactId>
+			<version>${univocity-parsers.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-rng-core</artifactId>
 			<version>${apache.commons.rng.version}</version>
@@ -38,11 +46,11 @@
 			<version>${apache.commons.rng.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-rng-simple -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-rng-simple</artifactId>
-			<version>${apache.commons.rng.version}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.commons</groupId> -->
+<!-- 			<artifactId>commons-rng-simple</artifactId> -->
+<!-- 			<version>${apache.commons.rng.version}</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
