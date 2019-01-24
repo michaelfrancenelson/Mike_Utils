@@ -157,8 +157,14 @@ public class ObjectReader {
 	 */
 	public static <T extends ObjectReader> T readParametersColumns(String filename, String sheetName, Class<T> c)
 	{
-		List<String[]> rows = fileToRows(filename, sheetName);
-		rows = transpose(rows);
+		List<String[]> columns = fileToRows(filename, sheetName);
+
+		/* for vertically-arranged parameters, keep only the first two rows. */
+		List<String[]> tr = transpose(columns);
+		List<String[]> rows = new ArrayList<>();
+
+		rows.add(tr.get(0)); rows.add(tr.get(1));
+
 		InputStream bain = rowsToStream(rows);
 		return streamToObjectList(bain, c).get(0);	
 	}
@@ -244,7 +250,13 @@ public class ObjectReader {
 		{
 			String[] r = new String[nCols];
 			for (int i = 0; i < nCols; i++)
-				r[i] = inputRows.get(i)[row].trim();
+			{
+				String temp = inputRows.get(i)[row];
+				if (temp != null)
+					temp = temp.trim();
+				else temp = "";
+				r[i] = temp;
+			}
 			newRows.add(r);
 		}
 		return newRows;
@@ -324,6 +336,7 @@ public class ObjectReader {
 	{
 		Workbook wb;
 		List<String[]> rows = null;
+		String[] temp;
 		try { 
 			wb = new XSSFWorkbook(new File(filename));
 			if (sheetName == null) 
@@ -332,7 +345,18 @@ public class ObjectReader {
 				rows = xlsSheetToRows(wb.getSheet(sheetName));
 			wb.close();
 		} catch (InvalidFormatException | IOException e) {e.printStackTrace(); }
-		return rows;
+
+		/* Make sure all the rows have the same number of entries and remove any empty rows. */
+		int nCols = rows.get(0).length;
+		List<String[]> newRows = new ArrayList<>();
+		for (String[] st : rows) 
+		{ if (st.length > 0) 
+		{
+			temp = new String[nCols];
+			for (int i = 0; i < st.length; i++) temp[i] = st[i];
+			newRows.add(temp); }
+		}
+		return newRows;
 	}
 
 	/**

@@ -1,9 +1,49 @@
 package search;
 
+import java.util.Arrays;
+
 public class Binary {
 
 	public static double TOL = 0.00001;
 
+	static double[] keys;
+	static double key;
+	public static void main(String[] args) {
+
+		keys = new double[] {-1.1, -1.0, -0.1, 0.0, 0.1, 1.0, 2.001};
+		
+		printKeys();
+
+		printSearch(0.0);
+		key = 0.01;
+		printSearch(key); printInsertion(key);
+
+		key = 2.001;
+		printSearch(key); printInsertion(key);
+
+		key = 2.0011;
+		printSearch(key); printInsertion(key);
+	
+		key = -1.1;
+		printSearch(key); printInsertion(key);
+
+		key = -1.1001;
+		printSearch(key); printInsertion(key);
+	}
+	
+	public static int insertionIndex(double[] array, double key)
+	{
+		if (key > array[array.length - 1]) return array.length - 1;
+		int index = Arrays.binarySearch(array, key);
+		if (index < 0) return -1 * index - 1;
+		return index;
+	}
+	
+	private static void printKeys() { for (double d : keys) System.out.print("" + d + " "); System.out.println();}
+	private static void printSearch(double key) { System.out.println("Key = " + key + " binary index = " + Arrays.binarySearch(keys, key)); }
+	private static void printInsertion(double key) { System.out.println("Key = " + key + " insert index = " + insertionIndex(keys, key)); }
+	
+	
 	/** 
 	 * @param array1a array1a of doubles, sorted ascending
 	 * @param key Must be greater than the smallest element in array1a. <br>
