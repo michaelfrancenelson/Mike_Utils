@@ -65,6 +65,7 @@ public class ArrayImagePackage
 		queryRow = Math.min(height - 1, (int) ((double) (height) * relativeY));
 	}
 
+	public StretchIcon getIcon() { return new StretchIcon(img); }
 	public String getQueryX() { return "" + queryColumn; }
 	public String getQueryY() { return "" + queryRow; }
 }
