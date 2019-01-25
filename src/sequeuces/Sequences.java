@@ -353,6 +353,17 @@ public class Sequences {
 		return out;
 	}
 	
-	
+	public static double[] minMax(double[][] array)
+	{
+		double min = Double.MAX_VALUE;
+		double max = Double.MIN_VALUE;
+		
+		for (double[] d1 : array) for (double d2 : d1)
+		{
+			if (d2 < min) min = d2;
+			if (d2 > max) max = d2;
+		}
+		return new double[] {min, max};
+	}
 
 }

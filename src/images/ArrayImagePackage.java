@@ -22,14 +22,29 @@ public class ArrayImagePackage
 
 	public String getVal() { return getValInterface.getValue(); }
 
-	public ArrayImagePackage(double[][] data, ColorInterpolator ci)
+	public ArrayImagePackage(double[] data, ColorInterpolator ci)
 	{
 		this.ci = ci;
+		double[][] out = new double[data.length - 1][1];
+		for (int i = 0; i < out.length; i++) {
+			out[i][0] = data[i];
+		}
+		setDouble(out);
+	}
+	
+	private void setDouble(double[][] data)
+	{
 		this.dataDouble = data;
 		this.width = data[0].length;
 		this.height = data.length;
 		setImage(this.dataDouble);
 		getValInterface = () -> getDoubleVal();
+	}
+	
+	public ArrayImagePackage(double[][] data, ColorInterpolator ci)
+	{
+		this.ci = ci;
+		setDouble(data);
 	}
 
 	public ArrayImagePackage(int[][] data, ColorInterpolator ci)

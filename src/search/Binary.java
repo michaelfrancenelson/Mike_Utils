@@ -168,6 +168,31 @@ public class Binary {
 	 *         In case the key matches a value in array1a, matching array1a element becomes lower index in returned array1a. <br>
 	 *         In case the key matches the highest value, the returned indices are both <b>array1a.length - 1</b>
 	 */
+	public static int[] indicesOfIntervalExtended(double[] array, double key)
+	{
+		int end = array.length - 1;
+
+		/* Special cases: */
+		if (end == 0) return new int[] { 0, 0 };
+		if (key <= array[0]) return new int[] { 0, 0 };
+		if (key >= array[end]) return new int[] { end, end };
+		if (end == 1) return new int[] { 0, 1 };
+
+		/* Otherwise the lower index corresponds to the largest element that is equal to or less than the key. */
+		int lower = indexOfLessThanOrEqualToKey(array, key);
+		if (array[lower] == key) return new int[] {lower, lower};
+		int[] out = new int[] {lower, lower + 1 };
+		return out;
+	}
+	
+	/**
+	 * @param array1a an array1a of doubles, in ascending order.
+	 * @param key double value must be within range of values in array1a, endpoints included.
+	 * @return indices of the array1a elements immediately greater than and less than the key. <br>
+	 *         In case the input array1a is a single element and the key matches, return <b> (0, 0) </b> <br> 
+	 *         In case the key matches a value in array1a, matching array1a element becomes lower index in returned array1a. <br>
+	 *         In case the key matches the highest value, the returned indices are both <b>array1a.length - 1</b>
+	 */
 	public static int[] indicesOfInterval(double[] array, double key)
 	{
 		int end = array.length - 1;
@@ -201,7 +226,8 @@ public class Binary {
 	
 	public static IndicesAndRelativePosition interpolateRelativePosition(double[] array, double key)
 	{
-		int[] indices = indicesOfInterval(array, key);
+//		int[] indices = indicesOfInterval(array, key); //TODO
+		int[] indices = indicesOfIntervalExtended(array, key);
 		/* endpoint/key equal to element/single element array array special cases: */
 		if (indices[0] == indices[1]) return new IndicesAndRelativePosition(indices, 1.0);
 		return new IndicesAndRelativePosition(indices, relativePosition(array[indices[0]], array[indices[1]], key));
