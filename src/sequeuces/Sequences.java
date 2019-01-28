@@ -63,7 +63,7 @@ public class Sequences {
 
 		if (minmax[0] < 0 || minmax[1] < 0) throw new IllegalArgumentException("All elements must be nonnegative.");
 		if (range == 0) //throw new IllegalArgumentException("the array1a must have more than 1 distinct value.");
-//			out = VectorTools.addConstantToVector(x, min);
+			//			out = VectorTools.addConstantToVector(x, min);
 			return x;
 		else		
 			for (int i = 0; i < x.length; i++)
@@ -122,11 +122,11 @@ public class Sequences {
 		for (double s : seq) System.out.println(s);
 		seq = doubleIntervals(0, 50, 6);
 		for (double s : seq) System.out.println(s);
-		
+
 		int[] seq2 = intSequence(0, -51, 6);
 		for (int i : seq2) System.out.println(i);
 	}
-	
+
 	public static double[] doubleSequence(double min, double max, int nIntervals)
 	{
 		if (max < min) throw new IllegalArgumentException("Max must be greater than or equal to min.");
@@ -152,10 +152,10 @@ public class Sequences {
 		out[nBreaks - 1] = max;
 		return out;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * 
 	 * @param intervalMins The 
@@ -167,22 +167,22 @@ public class Sequences {
 	{
 		/* Find the index to which to add the quantity: */
 		int index = Binary.indexOfLessThanKey(intervalMins, key);
-//		int index = Binary.indexOfLessThanOrEqual(intervalMins, key);
+		//		int index = Binary.indexOfLessThanOrEqual(intervalMins, key);
 		values[index] += toAdd;
 	}
-	
+
 	public static void incrementInInterval(double[] intervalMins, int[] values, double key)
 	{
 		/* Find the index to which to add the quantity: */
 		int index = Binary.indexOfLessThanKey(intervalMins, key);
-//		int index = Binary.indexOfLessThanOrEqual(intervalMins, key);
+		//		int index = Binary.indexOfLessThanOrEqual(intervalMins, key);
 		values[index]++;
 	}
-	
+
 	public static double[] doubleSpacedIntervals(double min, double max, double intervalWidth)
 	{
 		if (max < min) throw new IllegalArgumentException("Max must be greater than or equal to min.");
-		
+
 		double tol = 0.01;
 		double[] out;
 		int nIntervals = (int)((max - min) / intervalWidth);
@@ -193,7 +193,7 @@ public class Sequences {
 			nIntervals++;
 		}
 		out = new double[nIntervals + 1];
-		
+
 		for(int i = 0; i < nIntervals; i++)
 		{
 			out[i] = min + i * intervalWidth;
@@ -201,7 +201,7 @@ public class Sequences {
 		out[nIntervals] = max;
 		return out;
 	}
-	
+
 	public static int[] intSequence(int start, int end) 
 	{
 		if (start == end) throw new IllegalArgumentException("Sequence must have positive length.");
@@ -352,18 +352,39 @@ public class Sequences {
 
 		return out;
 	}
-	
-	public static double[] minMax(double[][] array)
+
+
+
+	public static double[] minMax(double[][] array, double naVal)
 	{
 		double min = Double.MAX_VALUE;
 		double max = Double.MIN_VALUE;
-		
+
 		for (double[] d1 : array) for (double d2 : d1)
 		{
-			if (d2 < min) min = d2;
-			if (d2 > max) max = d2;
+			if (d2 != naVal)
+			{
+				if (d2 < min) min = d2;
+				if (d2 > max) max = d2;
+			}
 		}
 		return new double[] {min, max};
+	}
+	
+	public static int[] minMax(int[][] array, int naVal)
+	{
+		int min = Integer.MAX_VALUE;
+		int max = Integer.MIN_VALUE;
+
+		for (int[] d1 : array) for (int d2 : d1)
+		{
+			if (d2 != naVal)
+			{
+				if (d2 < min) min = d2;
+				if (d2 > max) max = d2;
+			}
+		}
+		return new int[] {min, max};
 	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * @(#)StretchIcon.java	1.0 03/27/12
  */
-package images;
+package swing;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -36,40 +36,43 @@ import javax.swing.JLabel;
  */
 public class StretchIcon extends ImageIcon {
 
-	private int originX, originY, imageWidth, imageHeight; 
-	
+	private double aspectRatio;
+	protected boolean constantWidth;
+	private int width;
+
+	protected int currentOriginX;
+	protected int currentOriginY;
+	protected int currentImageWidth;
+	protected int currentImageHeight; 
+
 	/** */ private static final long serialVersionUID = 1L;
 
 	/**
 	 * Determines whether the aspect ratio of the image is maintained.
 	 * Set to <code>false</code> to allow th image to distort to fill the component.
 	 */
-	protected boolean proportionate = true;
-	
+	protected boolean fixedImageAspectRatio = true;
+
+	private void setImageAspectRatio()
+	{
+		Image img = getImage(); aspectRatio = getAspectRatio(img.getWidth(null), img.getHeight(null));
+	}
+
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(new Dimension(1000, 1002));
-		
+
 		StretchIcon icon = new StretchIcon("testData/france.jpg");
+		//		icon.proportionate = false;
 		JLabel label = new JLabel(icon);
 		frame.add(label);
 		frame.setVisible(true);
-		
-		System.out.println(icon.originX + " " + icon.originY);
+
+		System.out.println(icon.currentOriginX + " " + icon.currentOriginY);
 	}
-	
-	/**
-	 * Creates a <CODE>StretchIcon</CODE> from an array of bytes.
-	 *
-	 * @param  imageData an array of pixels in an image format supported by
-	 *             the AWT Toolkit, such as GIF, JPEG, or (as of 1.3) PNG
-	 *
-	 * @see ImageIcon#ImageIcon(byte[])
-	 */
-	public StretchIcon(byte[] imageData) {
-		super(imageData);
-	}
+
+
 
 	/**
 	 * Creates a <CODE>StretchIcon</CODE> from an array of bytes with the specified behavior.
@@ -84,7 +87,7 @@ public class StretchIcon extends ImageIcon {
 	 */
 	public StretchIcon(byte[] imageData, boolean proportionate) {
 		super(imageData);
-		this.proportionate = proportionate;
+		this.fixedImageAspectRatio = proportionate;	setImageAspectRatio();
 	}
 
 	/**
@@ -97,7 +100,7 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(byte[], java.lang.String)
 	 */
 	public StretchIcon(byte[] imageData, String description) {
-		super(imageData, description);
+		super(imageData, description); setImageAspectRatio();
 	}
 
 	/**
@@ -115,7 +118,7 @@ public class StretchIcon extends ImageIcon {
 	 */
 	public StretchIcon(byte[] imageData, String description, boolean proportionate) {
 		super(imageData, description);
-		this.proportionate = proportionate;
+		this.fixedImageAspectRatio = proportionate; setImageAspectRatio();
 	}
 
 	/**
@@ -126,7 +129,7 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.awt.Image)
 	 */
 	public StretchIcon(Image image) {
-		super(image);
+		super(image); setImageAspectRatio();
 	}
 
 	/**
@@ -140,8 +143,8 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.awt.Image) 
 	 */
 	public StretchIcon(Image image, boolean proportionate) {
-		super(image);
-		this.proportionate = proportionate;
+		super(image); setImageAspectRatio();
+		this.fixedImageAspectRatio = proportionate; 
 	}
 
 	/**
@@ -153,7 +156,7 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.awt.Image, java.lang.String) 
 	 */
 	public StretchIcon(Image image, String description) {
-		super(image, description);
+		super(image, description); setImageAspectRatio();
 	}
 
 	/**
@@ -168,8 +171,8 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.awt.Image, java.lang.String)
 	 */
 	public StretchIcon(Image image, String description, boolean proportionate) {
-		super(image, description);
-		this.proportionate = proportionate;
+		super(image, description); setImageAspectRatio();
+		this.fixedImageAspectRatio = proportionate;
 	}
 
 	/**
@@ -180,7 +183,7 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.lang.String)
 	 */
 	public StretchIcon(String filename) {
-		super(filename);
+		super(filename); setImageAspectRatio();
 	}
 
 	/**
@@ -194,8 +197,8 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.lang.String)
 	 */
 	public StretchIcon(String filename, boolean proportionate) {
-		super(filename);
-		this.proportionate = proportionate;
+		super(filename); setImageAspectRatio();
+		this.fixedImageAspectRatio = proportionate;
 	}
 
 	/**
@@ -207,7 +210,7 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.lang.String, java.lang.String)
 	 */
 	public StretchIcon(String filename, String description) {
-		super(filename, description);
+		super(filename, description); setImageAspectRatio();
 	}
 
 	/**
@@ -222,8 +225,8 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.awt.Image, java.lang.String)
 	 */
 	public StretchIcon(String filename, String description, boolean proportionate) {
-		super(filename, description);
-		this.proportionate = proportionate;
+		super(filename, description); setImageAspectRatio();
+		this.fixedImageAspectRatio = proportionate;
 	}
 
 	/**
@@ -234,7 +237,7 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.net.URL)
 	 */
 	public StretchIcon(URL location) {
-		super(location);
+		super(location); setImageAspectRatio();
 	}
 
 	/**
@@ -248,8 +251,8 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.net.URL)
 	 */
 	public StretchIcon(URL location, boolean proportionate) {
-		super(location);
-		this.proportionate = proportionate;
+		super(location); setImageAspectRatio();
+		this.fixedImageAspectRatio = proportionate;
 	}
 
 	/**
@@ -261,7 +264,7 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.net.URL, java.lang.String)
 	 */
 	public StretchIcon(URL location, String description) {
-		super(location, description);
+		super(location, description); setImageAspectRatio();
 	}
 
 	/**
@@ -276,8 +279,8 @@ public class StretchIcon extends ImageIcon {
 	 * @see ImageIcon#ImageIcon(java.net.URL, java.lang.String)
 	 */
 	public StretchIcon(URL location, String description, boolean proportionate) {
-		super(location, description);
-		this.proportionate = proportionate;
+		super(location, description); setImageAspectRatio();
+		this.fixedImageAspectRatio = proportionate;
 	}
 
 	/**
@@ -303,46 +306,84 @@ public class StretchIcon extends ImageIcon {
 	@Override
 	public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
 		Image image = getImage();
-		if (image == null) {
-			return;
-		}
-		Insets insets = ((Container) c).getInsets();
-		x = insets.left;
-		y = insets.top;
-
-		int w = c.getWidth() - x - insets.right;
-		int h = c.getHeight() - y - insets.bottom;
-		int iw = image.getWidth(c);
-		int ih = image.getHeight(c);
-
-		if (proportionate) {
-
-			if (iw * h < ih * w) {
-				iw = (h * iw) / ih;
-				x += (w - iw) / 2;
-				w = iw;
-			} else {
-				ih = (w * ih) / iw;
-				y += (h - ih) / 2;
-				h = ih;
-			}
-		}
-
-		originX = x; 
-		originY = y;
-		this.imageHeight = h;
-		this.imageWidth = w;
 		ImageObserver io = getImageObserver();
-		g.drawImage(image, x, y, w, h, io == null ? c : io);
+
+		if (image == null) { return; }
+		Insets insets = ((Container) c).getInsets();
+		x = insets.left; y = insets.top;
+
+		int currentComponentWidth = c.getWidth() - x - insets.right;
+		int currentComponentHeight = c.getHeight() - y - insets.bottom;
+		currentImageWidth = image.getWidth(c);
+		currentImageHeight = image.getHeight(c);
+
+		int newComponentWidth = currentComponentWidth;
+		int newComponentHeight = currentComponentHeight;
+		
+		int newImageX = x, newImageY = y;
+		double compAspectRatio = (double) currentComponentWidth / (double) currentComponentHeight;
+
+		/* If keeping the original aspect ratio. */
+		if (fixedImageAspectRatio) {
+			
+			if (aspectRatio < compAspectRatio)
+			{
+				System.out.println("fat component");
+				newComponentWidth = (int) ((double) currentComponentHeight * aspectRatio);
+				newImageX += (currentComponentWidth - newComponentWidth) / 2;
+			} else {
+				System.out.println("thin component");
+				newComponentHeight = (int) ((double) currentComponentWidth * aspectRatio);
+				newImageY += (currentComponentHeight - newComponentHeight) / 2;
+			}
+			
+			
+
+
+		}
+		
+		if (constantWidth)
+		{
+			currentComponentWidth = width;
+			this.currentImageWidth = width;
+		}
+		System.out.println("old comp. width  = " + currentComponentWidth);
+		System.out.println("new comp. width  = " + newComponentWidth);
+		System.out.println("old comp height = " + currentComponentHeight);
+		System.out.println("new comp. height = " + newComponentHeight);
+
+		currentOriginX = x; 
+		currentOriginY = y;
+		this.currentImageHeight = currentComponentHeight;
+		this.currentImageWidth = currentComponentWidth;
+		g.drawImage(image, newImageX, newImageY, newComponentWidth, newComponentHeight, io == null ? c : io);
+
+		
+		//		ImageObserver io = getImageObserver();
+//
+//
+////		g.drawImage(image, newImageX, newImageY, newImageWidth, currentComponentHeight, io == null ? c : io);
+//		g.drawImage(image, newImageX, newImageY, currentComponentWidth, currentComponentHeight, io == null ? c : io);
+
+
+
+		//		g.drawImage(image, newImageX, newImageY, currentComponentWidth, newImageHeight, io == null ? c : io);
+		//		g.drawImage(image, x, newImageY, currentComponentWidth, currentComponentHeight, io == null ? c : io);
+		//				g.drawImage(image, x, y, currentComponentWidth, currentComponentHeight, io == null ? c : io);
 	}
 
-	
-	public int getImageHeight() { return imageHeight; };
-	public int getImageWidth() { return imageWidth; }
-	public int getX() { return originX; }; 
-	public int getY() { return originY; }
-		
-	
+	private double getAspectRatio(int width, int height) { return (double) width / (double) height; }
+
+	public void setConstantWidth(int width)
+	{
+		this.width = width; this.constantWidth = true;
+	}
+	public int getImageHeight() { return currentImageHeight; };
+	public int getImageWidth() { return currentImageWidth; }
+	public int getX() { return currentOriginX; }; 
+	public int getY() { return currentOriginY; }
+
+
 	/**
 	 * Overridden to return 0.  The size of this Icon is determined by
 	 * the size of the component.
@@ -364,5 +405,7 @@ public class StretchIcon extends ImageIcon {
 	public int getIconHeight() {
 		return 0;
 	}
-	
+
 }
+
+
