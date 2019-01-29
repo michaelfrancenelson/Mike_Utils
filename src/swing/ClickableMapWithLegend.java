@@ -11,7 +11,7 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import images.ArrayImagePackage;
+import images.ArrayDataImageBundle;
 
 public class ClickableMapWithLegend extends JPanel{
 
@@ -22,7 +22,7 @@ public class ClickableMapWithLegend extends JPanel{
 	private String name;
 	private ClickableJLabel map;
 	private ClickableLegend legend;
-	private ArrayImagePackage mapPackage;
+	private ArrayDataImageBundle mapPackage;
 	private int legendWidth;
 	private double legendWeight, mapWeight;
 
@@ -38,7 +38,7 @@ public class ClickableMapWithLegend extends JPanel{
 	
 	public void setMap(
 //			double[][] data, Color[] colors, 
-			ArrayImagePackage pkg,
+			ArrayDataImageBundle pkg,
 			String name, int legendWidth, 
 			double legendWeight, double mapWeight, boolean left)
 	{
@@ -56,7 +56,7 @@ public class ClickableMapWithLegend extends JPanel{
 			String name, int legendWidth, 
 			double legendWeight, double mapWeight, boolean left)
 	{
-		setMap( new ArrayImagePackage(data, colors), name, legendWidth, legendWeight, mapWeight, left);
+		setMap( new ArrayDataImageBundle(data, colors), name, legendWidth, legendWeight, mapWeight, left);
 //		this.legendWeight = legendWeight; this.mapWeight = mapWeight;
 //		this.name = name;
 //		this.mapPackage = new ArrayImagePackage(data, colors);
@@ -172,7 +172,7 @@ public class ClickableMapWithLegend extends JPanel{
 
 		ClickableMapWithLegend map = new ClickableMapWithLegend();
 		map.setMap(
-				ArrayImagePackage.getRandomPackage(15, 25, ColorUtils.TERRAIN_COLORS),
+				ArrayDataImageBundle.createRandomPackage(15, 25, ColorUtils.TERRAIN_COLORS),
 				"test", 50,
 				1, 5, true);
 		

@@ -9,7 +9,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
-import images.ArrayImagePackage;
+import images.ArrayDataImageBundle;
 import sequeuces.Sequences;
 
 public class ClickableLegend extends ClickableJLabel {
@@ -30,7 +30,7 @@ public class ClickableLegend extends ClickableJLabel {
 		int nIntColors = 15;
 		Color[] rightColors = new Color[] {Color.green, Color.white, Color.blue, Color.red, Color.yellow};
 		ClickableLegend leg1, leg2;
-		ArrayImagePackage pkg1, pkg2;
+		ArrayDataImageBundle pkg1, pkg2;
 		Random r = new Random();
 		
 		Color labCol = Color.black;
@@ -42,9 +42,9 @@ public class ClickableLegend extends ClickableJLabel {
 		for (int i = 0; i < dat1.length; i++) for (int j = 0; j < dat1[0].length; j++) dat1[i][j] = r.nextDouble();
 		for (int i = 0; i < dat2.length; i++) for (int j = 0; j < dat2[0].length; j++) dat2[i][j] = r.nextInt(nIntColors);
 
-		pkg1 = new ArrayImagePackage(dat1, rightColors);
+		pkg1 = new ArrayDataImageBundle(dat1, rightColors);
 //		pkg2 = new ArrayImagePackage(dat2, rightColors);
-		pkg2 = new ArrayImagePackage(dat2, ColorUtils.GRAYS);
+		pkg2 = new ArrayDataImageBundle(dat2, ColorUtils.GRAYS);
 		
 		leg1 = new ClickableLegend(pkg1, "testing", 50);
 		leg2 = new ClickableLegend(pkg2, "integer", 75);
@@ -78,7 +78,7 @@ public class ClickableLegend extends ClickableJLabel {
 				ap.getMin(), ap.getMax(), nColors);
 		}
 	
-	public ClickableLegend(ArrayImagePackage pkg, String name, int width)
+	public ClickableLegend(ArrayDataImageBundle pkg, String name, int width)
 	{
 		this.ap = pkg;
 		this.name = name;
@@ -87,17 +87,17 @@ public class ClickableLegend extends ClickableJLabel {
 		setImage(pkg, name, width);
 	}
 	
-	public void setImage(ArrayImagePackage pkg, String name, int width)
+	public void setImage(ArrayDataImageBundle pkg, String name, int width)
 	{
 		this.ap = pkg;
 		buildData();
-		this.ap = new ArrayImagePackage(legendData, ap.getCi());
+		this.ap = new ArrayDataImageBundle(legendData, ap.getCi());
 		this.name = name;
 		this.legendWidth = width;
 //		this.proportionate = true;
 //		this.proportionate = false;
 //		icon = ap.getIcon(true);
-		icon = ap.getIcon(false);
+		icon = ap.createIcon(false);
 		icon.setConstantWidth(legendWidth);
 		setIcon(icon);
 	}

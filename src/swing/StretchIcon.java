@@ -17,7 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import images.ArrayImagePackage;
+import images.ArrayDataImageBundle;
 
 /**
  * An <CODE>Icon</CODE> that scales its image to fill the component area,
@@ -48,20 +48,29 @@ public class StretchIcon extends ImageIcon {
 	protected int currentImageWidth;
 	protected int currentImageHeight; 
 
+	protected int originalImageWidth, originalImageHeight;
+
 	/** */ private static final long serialVersionUID = 1L;
 
 	public StretchIcon() {}
-	
+
 	/**
 	 * Determines whether the aspect ratio of the image is maintained.
-	 * Set to <code>false</code> to allow th image to distort to fill the component.
+	 * Set to <code>false</code> to allow the image to distort to fill the component.
 	 */
 	protected boolean fixedImageAspectRatio = true;
+	private boolean verbose;
 
+	public void setVerbose(boolean b) { this.verbose = b; }
+
+	/** Calculate the aspect ratio of the original icon image. */
 	private void setImageAspectRatio()
 	{
 		Image img = getImage(); aspectRatio = getAspectRatio(img.getWidth(null), img.getHeight(null));
-		System.out.println("image aspect ratio: " + aspectRatio);
+		originalImageHeight = img.getHeight(null);
+		originalImageWidth = img.getWidth(null);
+
+		System.out.println(img.getHeight(null));
 	}
 
 	public static void main(String[] args) {
@@ -69,23 +78,23 @@ public class StretchIcon extends ImageIcon {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(new Dimension(1000, 1002));
 
-//		StretchIcon icon = new StretchIcon("testData/france.jpg");
-//		StretchIcon icon2 = new StretchIcon("testData/france.jpg");
-		StretchIcon icon2 = ArrayImagePackage.getRandomPackage(11, 18).getIcon(true);
-//				icon.fixedImageAspectRatio = false;
-//				icon.constantWidth = true;
-//				icon.width = 100;
-		
-//		icon.setFixedWidth(500);
-//		JLabel label = new JLabel(icon);
+		//		StretchIcon icon = new StretchIcon("testData/france.jpg");
+		//		StretchIcon icon2 = new StretchIcon("testData/france.jpg");
+		StretchIcon icon2 = ArrayDataImageBundle.createRandomPackage(11, 18).createIcon(true);
+		//				icon.fixedImageAspectRatio = false;
+		//				icon.constantWidth = true;
+		//				icon.width = 100;
+
+		//		icon.setFixedWidth(500);
+		//		JLabel label = new JLabel(icon);
 		JLabel label2 = new JLabel(icon2);
-		
+
 		frame.setLayout(new GridLayout());
-//		frame.add(label);
+		//		frame.add(label);
 		frame.add(label2);
 		frame.setVisible(true);
 
-//		System.out.println(icon.currentOriginX + " " + icon.currentOriginY);
+		//		System.out.println(icon.currentOriginX + " " + icon.currentOriginY);
 	}
 
 	public void setFixedWidth(int width) { this.width = width; this.constantWidth = true; this.fixedImageAspectRatio = false; }
@@ -106,8 +115,8 @@ public class StretchIcon extends ImageIcon {
 		this.fixedImageAspectRatio = proportionate;	setImageAspectRatio();
 	}
 
-	
-	
+
+
 	/**
 	 * Creates a <CODE>StretchIcon</CODE> from an array of bytes.
 	 *
@@ -337,77 +346,92 @@ public class StretchIcon extends ImageIcon {
 
 		int newComponentWidth = currentComponentWidth;
 		int newComponentHeight = currentComponentHeight;
-		
+
 		int newImageX = x, newImageY = y;
 		double compAspectRatio = (double) currentComponentWidth / (double) currentComponentHeight;
 
 		/* If keeping the original aspect ratio. */
 		if (fixedImageAspectRatio) {
-			
-			System.out.println("component aspect ratio: " + compAspectRatio);
-			
 			if (aspectRatio < compAspectRatio)
 			{
-				System.out.println("fat component");
 				newComponentWidth = (int) ((double) currentComponentHeight * aspectRatio);
-//				newImageX += (currentComponentWidth - newComponentWidth) / 2;
 			} else {
-				System.out.println("thin component");
 				newComponentHeight = (int) ((double) currentComponentWidth / aspectRatio);
-//				newImageY += (currentComponentHeight - newComponentHeight) / 2;
 			}
 		}
 
-		
 		if (constantWidth)
 		{ 
-			System.out.println("fixed width of " + width);
+			if (verbose) System.out.println("fixed width of " + width);
 			newComponentWidth = width;
 			this.currentImageWidth = width;
 		}
 
 		newImageX += (currentComponentWidth - newComponentWidth) / 2;
 		newImageY += (currentComponentHeight - newComponentHeight) / 2;
-		System.out.println("old comp. width  = " + currentComponentWidth);
-		System.out.println("new comp. width  = " + newComponentWidth);
-		System.out.println("old comp height = " + currentComponentHeight);
-		System.out.println("new comp. height = " + newComponentHeight);
+		if (verbose)
+		{
+			System.out.println("component aspect ratio: " + compAspectRatio);
+			System.out.println("image aspect ratio: " + aspectRatio);
+			System.out.println("old comp. width  = " + currentComponentWidth);
+			System.out.println("new comp. width  = " + newComponentWidth);
+			System.out.println("old comp height = " + currentComponentHeight);
+			System.out.println("new comp. height = " + newComponentHeight);
+		}
 
-//		currentOriginX = x; 
-//		currentOriginY = y;
 		currentOriginX = newImageX;
 		currentOriginY = newImageY;
-		this.currentImageHeight = currentComponentHeight;
-		this.currentImageWidth = currentComponentWidth;
+		this.currentImageHeight = newComponentHeight;
+		this.currentImageWidth = newComponentWidth;
 		g.drawImage(image, newImageX, newImageY, newComponentWidth, newComponentHeight, io == null ? c : io);
+	}
 
-		g.fillOval(newImageX, newImageY, 40, 40);
-		
-		
-		//		ImageObserver io = getImageObserver();
-//
-//
-////		g.drawImage(image, newImageX, newImageY, newImageWidth, currentComponentHeight, io == null ? c : io);
-//		g.drawImage(image, newImageX, newImageY, currentComponentWidth, currentComponentHeight, io == null ? c : io);
+	public int getImageNRows() { return originalImageHeight; }
+	public int getImageNCols() { return originalImageWidth; }
 
+	public void printImageCorneCoords()
+	{
+		int top = getY();
+		int left = getX();
+		int height = currentImageHeight;
+		int width = currentImageWidth;
+		System.out.println("source image height: " + originalImageHeight + ", source image width: " + originalImageWidth);	
+		System.out.println("display image height: " + height + ", display image width: " + width);	
+		System.out.println("display image: top: " + top + ", display image bottom: " + (top + getImageHeight()));
+		System.out.println("display image: left: " + left + ", display image bottom: " + (left + getImageWidth()));
+	}
 
+	private int relativeX(int pixelX) { return pixelX - getX(); }
+	private int relativeY(int pixelY) { return pixelY - getY(); }
 
-		//		g.drawImage(image, newImageX, newImageY, currentComponentWidth, newImageHeight, io == null ? c : io);
-		//		g.drawImage(image, x, newImageY, currentComponentWidth, currentComponentHeight, io == null ? c : io);
-		//				g.drawImage(image, x, y, currentComponentWidth, currentComponentHeight, io == null ? c : io);
+	private double ratio (int displayedPix, int imageDim)
+	{
+		return Math.max(
+				0.0,
+				Math.min(
+						1.0,
+						(double) displayedPix / (double) imageDim));
+	}
+	
+	public int getSourceImageColIndex(int clickedX)
+	{
+		int displayedX = relativeX(clickedX);
+		double ratioX = ratio(displayedX, currentImageWidth);
+		return (int) Math.min(originalImageWidth - 1, (ratioX * originalImageWidth));
+	}
+	public int getSourceImageRowIndex(int clickedY)
+	{
+		int displayedY = relativeY(clickedY);
+		double ratioY = ratio(displayedY, currentImageHeight);
+		return (int) Math.min(originalImageHeight - 1, (ratioY * originalImageHeight));
 	}
 
 	private double getAspectRatio(int width, int height) { return (double) width / (double) height; }
-
-	public void setConstantWidth(int width)
-	{
-		this.width = width; this.constantWidth = true;
-	}
+	public void setConstantWidth(int width) { this.width = width; this.constantWidth = true; this.fixedImageAspectRatio = false;}
 	public int getImageHeight() { return currentImageHeight; };
 	public int getImageWidth() { return currentImageWidth; }
 	public int getX() { return currentOriginX; }; 
 	public int getY() { return currentOriginY; }
-
 
 	/**
 	 * Overridden to return 0.  The size of this Icon is determined by

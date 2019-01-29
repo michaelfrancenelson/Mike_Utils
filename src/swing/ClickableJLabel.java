@@ -12,7 +12,7 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import images.ArrayImagePackage;
+import images.ArrayDataImageBundle;
 import images.ColorInterpolator;
 
 public class ClickableJLabel extends JLabel
@@ -24,7 +24,7 @@ public class ClickableJLabel extends JLabel
 	private int imgOriginX, imgOriginY, imgWidth, imgHeight;
 	protected double adjX, adjY;
 
-	protected ArrayImagePackage ap;
+	protected ArrayDataImageBundle ap;
 	private int clickedX, clickedY;
 
 	private boolean drawPoints = false, drawText = false;
@@ -65,14 +65,13 @@ public class ClickableJLabel extends JLabel
 
 	public ClickableJLabel() {addMouseListener(mmm);}
 
-	public Clickable
 	
-	public void setImage(ArrayImagePackage pkg, String name, boolean proportionate)
+	public void setImage(ArrayDataImageBundle pkg, String name, boolean proportionate)
 	{
 		this.proportionate = proportionate;
 		this.name = name;
 		this.ap = pkg;
-		icon = ap.getIcon(this.proportionate);
+		icon = ap.createIcon(this.proportionate);
 		setIcon(icon);
 	}
 	
@@ -189,10 +188,10 @@ public class ClickableJLabel extends JLabel
 		ColorInterpolator ci3 = new ColorInterpolator(new Color[] {Color.black, Color.blue, Color.red}, 0, nIntColors, -9999, Color.gray);
 		ColorInterpolator ci4 = new ColorInterpolator(new Color[] {Color.black, Color.green}, 0, height, -9999, Color.gray);
 
-		ArrayImagePackage ap1 = new ArrayImagePackage(dat1, ci1);
-		ArrayImagePackage ap2 = new ArrayImagePackage(dat2, ci2);
-		ArrayImagePackage ap3 = new ArrayImagePackage(dat3, ci3);
-		ArrayImagePackage ap4 = new ArrayImagePackage(dat4, ci4);
+		ArrayDataImageBundle ap1 = new ArrayDataImageBundle(dat1, ci1);
+		ArrayDataImageBundle ap2 = new ArrayDataImageBundle(dat2, ci2);
+		ArrayDataImageBundle ap3 = new ArrayDataImageBundle(dat3, ci3);
+		ArrayDataImageBundle ap4 = new ArrayDataImageBundle(dat4, ci4);
 
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -210,7 +209,7 @@ public class ClickableJLabel extends JLabel
 		lab4.setImage(ap4, "Array1", true);
 		
 		
-		lab = new ClickableJLabel(ap1.getIcon(true));
+		lab = new ClickableJLabel(ap1.createIcon(true));
 //		ClickableJLabel lab = new ClickableJLabel(ap1);
 //		ClickableJLabel lab2 = new ClickableJLabel(ap2);
 //		ClickableJLabel lab3 = new ClickableJLabel(ap3);
