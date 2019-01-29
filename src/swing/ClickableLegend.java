@@ -83,7 +83,7 @@ public class ClickableLegend extends ClickableJLabel {
 		this.ap = pkg;
 		this.name = name;
 		this.legendWidth = width;
-		this.font = font;
+//		this.font = font;
 		setImage(pkg, name, width);
 	}
 	

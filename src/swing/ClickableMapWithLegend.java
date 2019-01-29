@@ -26,6 +26,8 @@ public class ClickableMapWithLegend extends JPanel{
 	private int legendWidth;
 	private double legendWeight, mapWeight;
 
+	JPanel mapPanel, legendPanel;
+	
 	public ClickableMapWithLegend()
 	{
 		map = new ClickableJLabel();
@@ -75,6 +77,20 @@ public class ClickableMapWithLegend extends JPanel{
 //	private void setLayout(boolean left, double legWeight, double mapWeight)
 	private void setLayout()
 	{
+		
+		mapPanel = new JPanel();
+		legendPanel = new JPanel();
+//		legendPanel.setMaximumSize(new Dimension(legendWidth, Integer.MAX_VALUE));
+		
+		mapPanel.setLayout(new GridBagLayout());
+		legendPanel.setLayout(new GridBagLayout());
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.weightx = 1; c.weighty = 1;
+		
+		mapPanel.add(map, c);
+		legendPanel.add(legend, c);
+		
 		GridBagConstraints gcLeg = new GridBagConstraints();
 		GridBagConstraints gcMap = new GridBagConstraints();
 		
@@ -95,6 +111,8 @@ public class ClickableMapWithLegend extends JPanel{
 		{
 			gcLeg.gridx = 0;
 			gcMap.gridx = 1;
+//			add(legendPanel, gcLeg);
+//			add(mapPanel, gcMap);
 			add(legend, gcLeg);
 			add(map, gcMap);
 		}
@@ -102,6 +120,8 @@ public class ClickableMapWithLegend extends JPanel{
 		{
 			gcLeg.gridx = 1;
 			gcMap.gridx = 0;
+//			add(mapPanel, gcMap);
+//			add(legendPanel, gcLeg);
 			add(map, gcMap);
 			add(legend, gcLeg);
 		}
@@ -116,7 +136,11 @@ public class ClickableMapWithLegend extends JPanel{
 	
 	@Override public void paint(Graphics g)
 	{
-		legend.setPreferredSize(new Dimension(legendWidth, map.getHeight()));
+		
+		
+		
+		
+//		legend.setPreferredSize(new Dimension(legendWidth, map.getHeight()));
 //		legend.setPreferredSize(new Dimension(legend.getWidth(), map.getHeight()));
 		System.out.println(legend.getWidth());
 		
@@ -159,6 +183,7 @@ public class ClickableMapWithLegend extends JPanel{
 		
 		
 		frame.add(map);
+//		frame.add(map.legendPanel);
 //		frame.add(map.legend);
 //		frame.add(map.map);
 //		frame.pack();

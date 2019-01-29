@@ -65,6 +65,8 @@ public class ClickableJLabel extends JLabel
 
 	public ClickableJLabel() {addMouseListener(mmm);}
 
+	public Clickable
+	
 	public void setImage(ArrayImagePackage pkg, String name, boolean proportionate)
 	{
 		this.proportionate = proportionate;
@@ -207,6 +209,8 @@ public class ClickableJLabel extends JLabel
 		lab3.setImage(ap3, "Array1", true);
 		lab4.setImage(ap4, "Array1", true);
 		
+		
+		lab = new ClickableJLabel(ap1.getIcon(true));
 //		ClickableJLabel lab = new ClickableJLabel(ap1);
 //		ClickableJLabel lab2 = new ClickableJLabel(ap2);
 //		ClickableJLabel lab3 = new ClickableJLabel(ap3);
@@ -265,7 +269,7 @@ public class ClickableJLabel extends JLabel
 	void printImageOrigin()	{ System.out.println("image origin at (" + icon.getX() + ", " + icon.getY() + ")"); }
 	void printClickLocation() { System.out.println("mouse click at (" +	clickedX + ", " + clickedY + ")"); }
 
-	int getImgX() { return Math.min(imgWidth, Math.max(0, clickedX - imgOriginX)); }
+	int getImgX() { return Math.min(imgWidth, Math.max(0, clickedX - imgOriginX));}
 	int getImgY() { return Math.min(imgHeight, Math.max(0, clickedY - imgOriginY)); }
 
 	double imageRelX() { return relativeCoord(getImgX(), imgWidth); } 

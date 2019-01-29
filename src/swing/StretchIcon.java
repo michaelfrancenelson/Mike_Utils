@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.image.ImageObserver;
@@ -15,6 +16,8 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
+import images.ArrayImagePackage;
 
 /**
  * An <CODE>Icon</CODE> that scales its image to fill the component area,
@@ -38,7 +41,7 @@ public class StretchIcon extends ImageIcon {
 
 	private double aspectRatio;
 	protected boolean constantWidth;
-	private int width;
+	private int width = 0;
 
 	protected int currentOriginX;
 	protected int currentOriginY;
@@ -47,6 +50,8 @@ public class StretchIcon extends ImageIcon {
 
 	/** */ private static final long serialVersionUID = 1L;
 
+	public StretchIcon() {}
+	
 	/**
 	 * Determines whether the aspect ratio of the image is maintained.
 	 * Set to <code>false</code> to allow th image to distort to fill the component.
@@ -56,6 +61,7 @@ public class StretchIcon extends ImageIcon {
 	private void setImageAspectRatio()
 	{
 		Image img = getImage(); aspectRatio = getAspectRatio(img.getWidth(null), img.getHeight(null));
+		System.out.println("image aspect ratio: " + aspectRatio);
 	}
 
 	public static void main(String[] args) {
@@ -63,16 +69,26 @@ public class StretchIcon extends ImageIcon {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(new Dimension(1000, 1002));
 
-		StretchIcon icon = new StretchIcon("testData/france.jpg");
-		//		icon.proportionate = false;
-		JLabel label = new JLabel(icon);
-		frame.add(label);
+//		StretchIcon icon = new StretchIcon("testData/france.jpg");
+//		StretchIcon icon2 = new StretchIcon("testData/france.jpg");
+		StretchIcon icon2 = ArrayImagePackage.getRandomPackage(11, 18).getIcon(true);
+//				icon.fixedImageAspectRatio = false;
+//				icon.constantWidth = true;
+//				icon.width = 100;
+		
+//		icon.setFixedWidth(500);
+//		JLabel label = new JLabel(icon);
+		JLabel label2 = new JLabel(icon2);
+		
+		frame.setLayout(new GridLayout());
+//		frame.add(label);
+		frame.add(label2);
 		frame.setVisible(true);
 
-		System.out.println(icon.currentOriginX + " " + icon.currentOriginY);
+//		System.out.println(icon.currentOriginX + " " + icon.currentOriginY);
 	}
 
-
+	public void setFixedWidth(int width) { this.width = width; this.constantWidth = true; this.fixedImageAspectRatio = false; }
 
 	/**
 	 * Creates a <CODE>StretchIcon</CODE> from an array of bytes with the specified behavior.
@@ -90,6 +106,8 @@ public class StretchIcon extends ImageIcon {
 		this.fixedImageAspectRatio = proportionate;	setImageAspectRatio();
 	}
 
+	
+	
 	/**
 	 * Creates a <CODE>StretchIcon</CODE> from an array of bytes.
 	 *
@@ -326,38 +344,45 @@ public class StretchIcon extends ImageIcon {
 		/* If keeping the original aspect ratio. */
 		if (fixedImageAspectRatio) {
 			
+			System.out.println("component aspect ratio: " + compAspectRatio);
+			
 			if (aspectRatio < compAspectRatio)
 			{
 				System.out.println("fat component");
 				newComponentWidth = (int) ((double) currentComponentHeight * aspectRatio);
-				newImageX += (currentComponentWidth - newComponentWidth) / 2;
+//				newImageX += (currentComponentWidth - newComponentWidth) / 2;
 			} else {
 				System.out.println("thin component");
-				newComponentHeight = (int) ((double) currentComponentWidth * aspectRatio);
-				newImageY += (currentComponentHeight - newComponentHeight) / 2;
+				newComponentHeight = (int) ((double) currentComponentWidth / aspectRatio);
+//				newImageY += (currentComponentHeight - newComponentHeight) / 2;
 			}
-			
-			
-
-
 		}
+
 		
 		if (constantWidth)
-		{
-			currentComponentWidth = width;
+		{ 
+			System.out.println("fixed width of " + width);
+			newComponentWidth = width;
 			this.currentImageWidth = width;
 		}
+
+		newImageX += (currentComponentWidth - newComponentWidth) / 2;
+		newImageY += (currentComponentHeight - newComponentHeight) / 2;
 		System.out.println("old comp. width  = " + currentComponentWidth);
 		System.out.println("new comp. width  = " + newComponentWidth);
 		System.out.println("old comp height = " + currentComponentHeight);
 		System.out.println("new comp. height = " + newComponentHeight);
 
-		currentOriginX = x; 
-		currentOriginY = y;
+//		currentOriginX = x; 
+//		currentOriginY = y;
+		currentOriginX = newImageX;
+		currentOriginY = newImageY;
 		this.currentImageHeight = currentComponentHeight;
 		this.currentImageWidth = currentComponentWidth;
 		g.drawImage(image, newImageX, newImageY, newComponentWidth, newComponentHeight, io == null ? c : io);
 
+		g.fillOval(newImageX, newImageY, 40, 40);
+		
 		
 		//		ImageObserver io = getImageObserver();
 //
