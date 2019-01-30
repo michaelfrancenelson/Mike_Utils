@@ -6,7 +6,7 @@ import java.util.Random;
 
 import sequeuces.Sequences;
 import swing.ColorUtils;
-import swing.StretchIcon;
+import swing.StretchyClickyIcon;
 
 public class ArrayDataImageBundle 
 {
@@ -20,24 +20,22 @@ public class ArrayDataImageBundle
 	public static Color  NA_COLOR  = Color.gray;
 
 	private int width, height, queryColumn, queryRow;
-
 	private DataInterface getValInterface;
-
 	private BufferedImage img;
 	private ColorInterpolator ci;
 
 	private double[][] dataDouble = null;
 	private int[][] dataInt = null;
-
 	private double[] doubleMinMax;
-
-	//	public String getVal() { return getValInterface.getValue(); }
+	private String dataName;
+	
 	public String getVal(int col, int row) { 
 		queryColumn = col; queryRow = row;
 		return getValInterface.getValue(); }
 
-	public ArrayDataImageBundle(double[] data, ColorInterpolator ci)
+	public ArrayDataImageBundle(double[] data, ColorInterpolator ci, String name)
 	{
+		this.dataName = name;
 		this.setCi(ci);
 		double[][] out = new double[data.length - 1][1];
 		for (int i = 0; i < out.length; i++) { out[i][0] = data[i]; }
@@ -65,18 +63,20 @@ public class ArrayDataImageBundle
 		doubleMinMax = new double[] { (double) intMinMax[0], (double) intMinMax[1] };
 	}
 
-	public ArrayDataImageBundle(int[][] data, Color[] colors) { this(data, colors, NA_COLOR, NA_INT); }
-	public ArrayDataImageBundle(double[][] data, Color[] colors) { this(data, colors, NA_COLOR, NA_DOUBLE); }
+	public ArrayDataImageBundle(int[][] data, Color[] colors, String name) { this(data, colors, NA_COLOR, NA_INT, name); }
+	public ArrayDataImageBundle(double[][] data, Color[] colors, String name) { this(data, colors, NA_COLOR, NA_DOUBLE, name); }
 
-	public ArrayDataImageBundle(int[][] data, Color[] colors, Color naColor, int naInt)
+	public ArrayDataImageBundle(int[][] data, Color[] colors, Color naColor, int naInt, String name)
 	{
+		this.dataName = name;
 		int[] minMax = Sequences.minMax(data, naInt);
 		ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], naInt, naColor);
 		this.setCi(ci);	setInt(data);
 	}
 
-	public ArrayDataImageBundle(double[][] data, Color[] colors, Color naColor, double naDouble)
+	public ArrayDataImageBundle(double[][] data, Color[] colors, Color naColor, double naDouble, String name)
 	{
+		this.dataName = name;
 		double[] minMax = Sequences.minMax(data, naDouble);
 		ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], naDouble, naColor);
 		this.setCi(ci);	setDouble(data);
@@ -119,30 +119,15 @@ public class ArrayDataImageBundle
 	private String getDoubleVal() { return String.format(mouseClickArrayDblFormat, dataDouble[queryRow][queryColumn]);}
 	private String getIntVal() { return String.format("%d", dataInt[queryRow][queryColumn]); }
 
-	//	public void setQueryCoords(int col, int row) { queryColumn = col; queryRow = row;}
-
-	//	public void setQueryCoords(double relativeX, double relativeY)
-	//	{
-	//		queryColumn = Math.min(width - 1, (int) ((double) (width) * relativeX));
-	//		queryRow = Math.min(height - 1, (int) ((double) (height) * relativeY));
-	//	}
-
-	//	public int getDataWidth() { return width; }
-	//	public int getDataHeight() { return height; }
-
 	public double getMinValue() { return doubleMinMax[0]; }
 	public double getMaxValue() { return doubleMinMax[1]; }
 
-	public StretchIcon createIcon(boolean proportionate) { return new StretchIcon(img, proportionate); }
-	public StretchIcon createIcon(boolean proportionate, int iconFixedWidth) { 
-		StretchIcon icon = new StretchIcon(img, proportionate);
+	public StretchyClickyIcon createIcon(boolean proportionate) { return new StretchyClickyIcon(img, proportionate); }
+	public StretchyClickyIcon createIcon(boolean proportionate, int iconFixedWidth) { 
+		StretchyClickyIcon icon = new StretchyClickyIcon(img, proportionate);
 		if (iconFixedWidth > 0) icon.setFixedWidth(iconFixedWidth);
 		return icon;
 	}
-
-	//	public String getQueryX() { return "" + queryColumn; }
-	//	public String getQueryY() { return "" + queryRow; }
-
 
 	public static ArrayDataImageBundle createGradientBundle(ArrayDataImageBundle bundle, int nSteps)
 	{
@@ -159,7 +144,7 @@ public class ArrayDataImageBundle
 
 		double[] data = Sequences.doubleIntervals(
 				bundle.getMinValue(), bundle.getMaxValue(), nSteps);
-		return new ArrayDataImageBundle(data, bundle.ci);
+		return new ArrayDataImageBundle(data, bundle.ci, bundle.dataName);
 	}
 
 	public ColorInterpolator getCi() { return ci; }
@@ -171,7 +156,7 @@ public class ArrayDataImageBundle
 		int nIntColors = 10;
 		int[][] dat2 = new int[nRows][nCols];
 		for (int i = 0; i < dat2.length; i++) for (int j = 0; j < dat2[0].length; j++) dat2[i][j] = r.nextInt(nIntColors);
-		return new ArrayDataImageBundle(dat2, ColorUtils.HEAT_COLORS);
+		return new ArrayDataImageBundle(dat2, ColorUtils.HEAT_COLORS, "random data");
 	}
 
 	public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols, Color[] colors)
@@ -180,6 +165,8 @@ public class ArrayDataImageBundle
 		int nIntColors = 10;
 		int[][] dat2 = new int[nRows][nCols];
 		for (int i = 0; i < dat2.length; i++) for (int j = 0; j < dat2[0].length; j++) dat2[i][j] = r.nextInt(nIntColors);
-		return new ArrayDataImageBundle(dat2, colors);
-	}	
+		return new ArrayDataImageBundle(dat2, colors, "random data");
+	}
+
+	public Object getName() { return dataName; }
 }
