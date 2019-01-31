@@ -13,7 +13,8 @@ import images.ArrayDataImageBundle;
 
 public class StretchyClickyMapAndLegendPanel extends JPanel
 {
-
+	/** */ private static final long serialVersionUID = 5932759068993864983L;
+	
 	boolean left;
 	ArrayDataImageBundle bundle;
 	GridBagLayout layout;
@@ -47,7 +48,7 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 
 		c.weightx = 0; 
 		c.fill = GridBagConstraints.BOTH;
-		c.fill = GridBagConstraints.NONE;
+//		c.fill = GridBagConstraints.NONE;
 		if (left)
 			c.gridx = 0;
 		else
@@ -72,7 +73,7 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 	public static void demo_01()
 	{
 		JFrame frame;
-		StretchyClickyDataJLabel label1, label2;
+//		StretchyClickyDataJLabel label1, label2;
 
 		frame = new JFrame("Clicky stretchy drawing on icon example");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

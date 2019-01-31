@@ -82,8 +82,11 @@ public class ObjectReader {
 			try {
 				switch (simpleType) {
 				case("int"): if (f.getInt(o)           == NON_INITIALIZED_INT)     b = false; break;
+				case("Integer"): if (((int) f.getInt(o))         == NON_INITIALIZED_INT)     b = false; break;
 				case("double"):  if (f.getDouble(o)    == NON_INITIALIZED_DOUBLE)  b = false; break;
-				case("Boolean"): if (f.get(o)          == null)                    b = false; break;
+				case("Double"):  if (((double) f.getDouble(o))    == NON_INITIALIZED_DOUBLE)  b = false; break;
+				case("boolean"): if (f.get(o)          == null)                    b = false; break;
+//				case("Boolean"): if ((boolean) f.get(o)          == null)                    b = false; break;
 				case("String"):  if ((String) f.get(o) == NON_INITIALIZED_STRING)  b = false; break;
 				}
 				fVal = f.get(o).toString();

@@ -8,13 +8,13 @@ import sequeuces.Sequences;
 
 public class ColorInterpolator
 {
-	public Color[] colors;
-	public double min;
-	public double max;
+	private Color[] colors;
+//	private double min;
+//	private double max;
 
-	Color naColor = Color.GRAY;
-	int naInt = Integer.MIN_VALUE;
-	double naDouble = Double.MIN_VALUE;
+	private Color naColor = Color.GRAY;
+	private int naInt = Integer.MIN_VALUE;
+	private double naDouble = Double.MIN_VALUE;
 
 	double[] breaks;
 
@@ -22,8 +22,8 @@ public class ColorInterpolator
 	public ColorInterpolator(Color[] colors)
 	{
 		this.colors = colors;
-		this.min = 0.0;
-		this.max = 1.0;
+//		this.min = 0.0;
+//		this.max = 1.0;
 		
 		this.breaks = new double[] {0, 1};
 	}
@@ -32,8 +32,8 @@ public class ColorInterpolator
 	{
 		if (min > max) throw new IllegalArgumentException("max must be greater than or equal to min.");
 		this.colors = colors;
-		this.min = (double) min;
-		this.max = (double) max;
+//		this.min = (double) min;
+//		this.max = (double) max;
 		this.naInt = naInt;
 		this.naColor = naColor;
 		this.breaks = Sequences.doubleSequence((double) min, (double) max, colors.length);
@@ -46,8 +46,8 @@ public class ColorInterpolator
 		this.breaks = Sequences.doubleSequence((double) min, (double) max, colors.length);
 
 		this.colors = colors;
-		this.min = min;
-		this.max = max;
+//		this.min = min;
+//		this.max = max;
 		this.naDouble = naDouble;
 		this.naColor = naColor;
 

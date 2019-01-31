@@ -13,11 +13,16 @@ public class ArrayDataImageBundle
 	@FunctionalInterface
 	private interface DataInterface { String getValue(); }
 
-	public static int    rgbType = BufferedImage.TYPE_3BYTE_BGR;
-	public static String mouseClickArrayDblFormat = "%.2f";
-	public static double NA_DOUBLE = Double.MIN_VALUE;
-	public static int    NA_INT    = Integer.MIN_VALUE;
-	public static Color  NA_COLOR  = Color.gray;
+	private int    rgbType = BufferedImage.TYPE_3BYTE_BGR;
+	private String mouseClickArrayDblFormat = "%.2f";
+	private double na_double = Double.MIN_VALUE;
+	private int    na_int    = Integer.MIN_VALUE;
+	private Color  na_color  = Color.gray;
+//	public static int    rgbType = BufferedImage.TYPE_3BYTE_BGR;
+//	public static String mouseClickArrayDblFormat = "%.2f";
+//	public static double NA_DOUBLE = Double.MIN_VALUE;
+//	public static int    NA_INT    = Integer.MIN_VALUE;
+//	public static Color  NA_COLOR  = Color.gray;
 
 	private int width, height, queryColumn, queryRow;
 	private DataInterface getValInterface;
@@ -49,7 +54,7 @@ public class ArrayDataImageBundle
 		this.height = data.length;
 		setImage(this.dataDouble);
 		getValInterface = () -> getDoubleVal();
-		doubleMinMax = Sequences.minMax(data, NA_DOUBLE);
+		doubleMinMax = Sequences.minMax(data, na_double);
 	}
 
 	private void setInt(int[][] data)
@@ -59,16 +64,22 @@ public class ArrayDataImageBundle
 		this.height = data.length;
 		setImage(this.dataInt);
 		getValInterface = () -> getIntVal();
-		int[] intMinMax = Sequences.minMax(data, NA_INT);
+		int[] intMinMax = Sequences.minMax(data, na_int);
 		doubleMinMax = new double[] { (double) intMinMax[0], (double) intMinMax[1] };
 	}
 
-	public ArrayDataImageBundle(int[][] data, Color[] colors, String name) { this(data, colors, NA_COLOR, NA_INT, name); }
-	public ArrayDataImageBundle(double[][] data, Color[] colors, String name) { this(data, colors, NA_COLOR, NA_DOUBLE, name); }
+	public ArrayDataImageBundle(int[][] data, Color[] colors, String name) 
+	{ this(data, colors, Color.gray, Integer.MIN_VALUE, name); }
+	public ArrayDataImageBundle(double[][] data, Color[] colors, Color na_color, String name) 
+	{	this(data, colors, na_color, Double.MIN_VALUE, name); }
+//	public ArrayDataImageBundle(int[][] data, Color[] colors, String name) { this(data, colors, NA_COLOR, NA_INT, name); }
+//	public ArrayDataImageBundle(double[][] data, Color[] colors, String name) { this(data, colors, NA_COLOR, NA_DOUBLE, name); }
 
 	public ArrayDataImageBundle(int[][] data, Color[] colors, Color naColor, int naInt, String name)
 	{
 		this.dataName = name;
+		this.na_color = naColor;
+		this.na_int = naInt;
 		int[] minMax = Sequences.minMax(data, naInt);
 		ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], naInt, naColor);
 		this.setCi(ci);	setInt(data);
@@ -77,8 +88,10 @@ public class ArrayDataImageBundle
 	public ArrayDataImageBundle(double[][] data, Color[] colors, Color naColor, double naDouble, String name)
 	{
 		this.dataName = name;
+		this.na_double = naDouble;
+		this.na_color = naColor;
 		double[] minMax = Sequences.minMax(data, naDouble);
-		ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], naDouble, naColor);
+		ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], na_double, na_color);
 		this.setCi(ci);	setDouble(data);
 	}
 

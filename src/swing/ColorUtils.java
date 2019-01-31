@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class ColorUtils {
 
-	public static final Color[] 
+	public static final Color[]
 			TERRAIN_COLORS = webToColor(new String[]{"#00A600", "#2DB600", "#63C600", "#A0D600", "#E6E600", "#E8C32E", "#EBB25E", "#EDB48E", "#F0C9C0", "#F2F2F2"}),
 			HEAT_COLORS = webToColor(new String[]{"#FF0000", "#FF2400", "#FF4900", "#FF6D00", "#FF9200", "#FFB600", "#FFDB00", "#FFFF00", "#FFFF40", "#FFFFBF"}),
 			GRAYS = webToColor(new String[]{"#4D4D4D", "#6C6C6C", "#838383", "#969696", "#A7A7A7", "#B5B5B5", "#C3C3C3", "#CFCFCF", "#DBDBDB", "#E6E6E6"}),
