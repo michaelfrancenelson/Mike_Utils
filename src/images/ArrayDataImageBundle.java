@@ -165,17 +165,24 @@ public class ArrayDataImageBundle
 
 	public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols)
 	{
-		Random r = new Random();
 		int nIntColors = 10;
-		int[][] dat2 = new int[nRows][nCols];
-		for (int i = 0; i < dat2.length; i++) for (int j = 0; j < dat2[0].length; j++) dat2[i][j] = r.nextInt(nIntColors);
-		return new ArrayDataImageBundle(dat2, ColorUtils.HEAT_COLORS, "random data");
+		return createRandomPackage(nRows, nCols, nIntColors);
+	}
+	
+	public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols, int nIntColors)
+	{
+//		Random r = new Random();
+		return createRandomPackage(nRows, nCols, nIntColors, ColorUtils.HEAT_COLORS);
+//		int nIntColors = 10;
+//		int[][] dat2 = new int[nRows][nCols];
+//		for (int i = 0; i < dat2.length; i++) for (int j = 0; j < dat2[0].length; j++) dat2[i][j] = r.nextInt(nIntColors);
+//		return new ArrayDataImageBundle(dat2, ColorUtils.HEAT_COLORS, "random data");
 	}
 
-	public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols, Color[] colors)
+	public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols, int nIntColors, Color[] colors)
 	{
 		Random r = new Random();
-		int nIntColors = 10;
+//		int nIntColors = 10;
 		int[][] dat2 = new int[nRows][nCols];
 		for (int i = 0; i < dat2.length; i++) for (int j = 0; j < dat2[0].length; j++) dat2[i][j] = r.nextInt(nIntColors);
 		return new ArrayDataImageBundle(dat2, colors, "random data");

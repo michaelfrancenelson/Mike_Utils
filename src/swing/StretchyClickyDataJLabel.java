@@ -9,6 +9,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.time.LocalTime;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -45,6 +47,9 @@ public class StretchyClickyDataJLabel extends JLabel
 	private Color textColor = Color.black;
 	private Font font = DEFAULT_FONT;
 	
+	boolean keepIconProportion;
+	int iconFixedWidth;
+	
 	private MouseListener mmm = new MouseListener() {
 		@Override public void mouseClicked(MouseEvent arg0) { 
 			icon.setMouseClick(arg0);
@@ -70,8 +75,24 @@ public class StretchyClickyDataJLabel extends JLabel
 	public StretchyClickyDataJLabel(ArrayDataImageBundle ap, boolean keepIconProportion)	{ this(ap, keepIconProportion, -9999); }
 	public StretchyClickyDataJLabel(ArrayDataImageBundle ap, int iconFixedWidth)	{ this(ap, false, iconFixedWidth); }
 	public StretchyClickyDataJLabel(ArrayDataImageBundle ap, boolean keepIconProportion, int iconFixedWidth)
-	{	this();	this.bundle = ap; setIcon(ap.createIcon(keepIconProportion, iconFixedWidth)); }
+	{	
+		this();	this.bundle = ap; 
+		this.keepIconProportion = keepIconProportion;
+		this.iconFixedWidth = iconFixedWidth;
+//		setIcon(ap.createIcon(this.keepIconProportion, this.iconFixedWidth)); 
+		setIcon();
+		}
 
+	public void updateBundle(ArrayDataImageBundle bundle)
+	{
+		this.bundle = bundle;
+		setIcon();
+	}
+
+	
+	private void setIcon()
+	{	setIcon(bundle.createIcon(this.keepIconProportion, this.iconFixedWidth)); }
+	
 	public void printIconQuery()
 	{
 		System.out.println(String.format(
@@ -84,8 +105,41 @@ public class StretchyClickyDataJLabel extends JLabel
 
 	public static void main(String[] args) {
 		demo_draw_points_on_icon();
+		demo_update_bundle();
 	}
 
+	
+	public static void demo_update_bundle()
+	{
+		JFrame frame;
+		StretchyClickyDataJLabel label1;
+		
+		frame = new JFrame("Clicky stretchy drawing on icon example");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(new Dimension(1600, 1400));
+		
+		label1 = new StretchyClickyDataJLabel(
+				ArrayDataImageBundle.createRandomPackage(12, 17),
+				true, -9999);
+		
+		frame.add(label1);
+		frame.setVisible(true);
+		
+		Random r = new Random();
+		
+		long interval = 1;
+		long second = LocalTime.now().getSecond();
+		while (true)
+		{
+			if (LocalTime.now().getSecond() - second > interval)
+			{
+				second = LocalTime.now().getSecond();
+				label1.updateBundle(ArrayDataImageBundle.createRandomPackage(12, 17, r.nextInt(10) + 1));
+			}
+		}
+		
+	}
+	
 	public static void demo_draw_points_on_icon()
 	{
 		JFrame frame;
@@ -225,6 +279,7 @@ public class StretchyClickyDataJLabel extends JLabel
 		if (addPoints) drawPoints(g);
 		if (addText) drawText(g);
 	}
+	
 	
 	public void setVerbose(boolean b) { this.verbose = b; }
 	private void setIcon(StretchyClickyIcon icon) { this.icon = icon; super.setIcon(icon);}

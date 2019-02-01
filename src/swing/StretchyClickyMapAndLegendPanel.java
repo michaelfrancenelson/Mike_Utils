@@ -1,9 +1,13 @@
 package swing;
 
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.Box;
 import javax.swing.JFrame;
@@ -14,7 +18,7 @@ import images.ArrayDataImageBundle;
 public class StretchyClickyMapAndLegendPanel extends JPanel
 {
 	/** */ private static final long serialVersionUID = 5932759068993864983L;
-	
+
 	boolean left;
 	ArrayDataImageBundle bundle;
 	GridBagLayout layout;
@@ -37,6 +41,13 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 		this.legendLabel = new StretchyClickyDataJLabel(ArrayDataImageBundle.createGradientBundle(bundle, legendWidth), legendWidth);
 	}
 
+	public void update(ArrayDataImageBundle bundle)
+	{
+		this.bundle = bundle;
+		mapLabel.updateBundle(this.bundle);
+		legendLabel.updateBundle(ArrayDataImageBundle.createGradientBundle(bundle, legendWidth));
+	}
+
 	private void buildLayout()
 	{
 		layout = new GridBagLayout();
@@ -48,7 +59,6 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 
 		c.weightx = 0; 
 		c.fill = GridBagConstraints.BOTH;
-//		c.fill = GridBagConstraints.NONE;
 		if (left)
 			c.gridx = 0;
 		else
@@ -68,38 +78,63 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 	public static void main(String[] args) 
 	{
 		demo_01();
+		demo_update();
+	}
+
+	public static void demo_update()
+	{
+		JFrame frame;
+		frame = new JFrame("Updating map demo");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(new Dimension(1600, 1400));
+
+		ArrayDataImageBundle bundle = ArrayDataImageBundle.createRandomPackage(12, 17);
+		StretchyClickyMapAndLegendPanel map = new StretchyClickyMapAndLegendPanel(bundle, true);
+
+		frame.add(map);
+		frame.setVisible(true);
+
+		long interval = 1;
+		long second = LocalTime.now().getSecond();
+
+		List<Color[]> colorList = new ArrayList<>();
+		colorList.add(ColorUtils.GRAYS);
+		colorList.add(ColorUtils.GREENS);
+		colorList.add(ColorUtils.TOPO_COLORS);
+		colorList.add(ColorUtils.HEAT_COLORS);
+
+		Random r = new Random();
+
+		while (true)
+		{
+			if (LocalTime.now().getSecond() - second > interval)
+			{
+				second = LocalTime.now().getSecond();
+				map.update(
+						ArrayDataImageBundle.createRandomPackage(
+								r.nextInt(50) + 10, r.nextInt(50) + 10,
+								r.nextInt(50) + 1, colorList.get(r.nextInt(3))));
+			}
+		}
 	}
 
 	public static void demo_01()
 	{
 		JFrame frame;
-//		StretchyClickyDataJLabel label1, label2;
 
 		frame = new JFrame("Clicky stretchy drawing on icon example");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(new Dimension(1600, 1400));
 
 		ArrayDataImageBundle bundle = ArrayDataImageBundle.createRandomPackage(12, 17);
-
 		StretchyClickyMapAndLegendPanel map = new StretchyClickyMapAndLegendPanel(bundle, true);
 
 		frame.add(map);
 		frame.setVisible(true);
-
 	}
 
-//	@Override
-	public void paint(Graphics g)
-	{
-//		int height = mapLabel.getHeight();
-//		int width = mapLabel.getWidth();
-//		legendLabel.setPreferredSize(new Dimension(legendWidth, height));
-//		legendLabel.icon.setSize(new Dimension(legendWidth, height));
-//		mapLabel.setPreferredSize(new Dimension(width, height));
-//		legendLabel.setSize(new Dimension(legendWidth, height));
-//		mapLabel.setSize(new Dimension(width, height));
-		super.paint(g);
-	}
-
-
+//	public void paint(Graphics g)
+//	{
+//		super.paint(g);
+//	}
 }
