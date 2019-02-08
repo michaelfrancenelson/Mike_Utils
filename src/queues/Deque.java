@@ -4,16 +4,16 @@ import java.util.NoSuchElementException;
 
 public class Deque<Item> implements Iterable<Item> {
 
-	private Node first, last;
-	private int n;
+	protected Node<Item> first, last;
+	protected int n;
 
-	private class Node {
-		Item item;
-		Node ahead;
-		Node behind;
+	protected class Node<T> {
+		public T item;
+		public Node<T> ahead;
+		public Node<T> behind;
 	}
 
-	/** Conscruct a new empty Deque. */
+	/** Construct a new empty Deque. */
 	public Deque() { first = null; last = null; n = 0; }
 
 	/**  is the deque empty? */
@@ -27,21 +27,20 @@ public class Deque<Item> implements Iterable<Item> {
 		if (item == null) throw new IllegalArgumentException("Trying to add a null element.");
 		if (!isEmpty())
 		{
-			Node oldFirst = first;
-			first = new Node();
+			Node<Item> oldFirst = first;
+			first = new Node<>();
 			first.item = item;
 			first.behind = oldFirst;
 			oldFirst.ahead = first;
 			if (n == 1) last = oldFirst;
 			n++;
 		} 
-		else 
-			addToEmpty(item);
+		else addToEmpty(item);
 	}
 
 	/** Add the first element to an empty deque. */
 	private void addToEmpty(Item item) {
-		first = new Node();
+		first = new Node<Item>();
 		first.item = item;
 		last = first;
 		n = 1;
@@ -53,14 +52,14 @@ public class Deque<Item> implements Iterable<Item> {
 		if (!isEmpty())
 		{
 			if (n > 1) {
-				Node oldLast = last;
-				last = new Node();
+				Node<Item> oldLast = last;
+				last = new Node<Item>();
 				last.item = item;
 				last.ahead = oldLast;
 				oldLast.behind = last;
 			} else
 			{
-				last = new Node();
+				last = new Node<Item>();
 				last.item = item;
 				last.ahead = first;
 				first.behind = last;
@@ -118,11 +117,12 @@ public class Deque<Item> implements Iterable<Item> {
 	public Iterator<Item> iterator() {
 		return new DequeIterator();
 	}
-
-	private class DequeIterator implements Iterator<Item> {
+	
+	protected class DequeIterator implements Iterator<Item> 
+	{
 
 		private boolean firstNode = true;
-		private Node current;
+		private Node<Item> current;
 
 		public boolean hasNext()  {
 			if (n < 1) return false;

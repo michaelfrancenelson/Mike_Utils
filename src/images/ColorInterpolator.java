@@ -9,22 +9,17 @@ import sequeuces.Sequences;
 public class ColorInterpolator
 {
 	private Color[] colors;
-//	private double min;
-//	private double max;
 
 	private Color naColor = Color.GRAY;
 	private int naInt = Integer.MIN_VALUE;
 	private double naDouble = Double.MIN_VALUE;
 
-	double[] breaks;
-
+	private double[] breaks;
+	
 	/** Constructor to use with boolean variables. */
 	public ColorInterpolator(Color[] colors)
 	{
 		this.colors = colors;
-//		this.min = 0.0;
-//		this.max = 1.0;
-		
 		this.breaks = new double[] {0, 1};
 	}
 
@@ -32,8 +27,6 @@ public class ColorInterpolator
 	{
 		if (min > max) throw new IllegalArgumentException("max must be greater than or equal to min.");
 		this.colors = colors;
-//		this.min = (double) min;
-//		this.max = (double) max;
 		this.naInt = naInt;
 		this.naColor = naColor;
 		this.breaks = Sequences.doubleSequence((double) min, (double) max, colors.length);
@@ -46,8 +39,6 @@ public class ColorInterpolator
 		this.breaks = Sequences.doubleSequence((double) min, (double) max, colors.length);
 
 		this.colors = colors;
-//		this.min = min;
-//		this.max = max;
 		this.naDouble = naDouble;
 		this.naColor = naColor;
 
@@ -71,11 +62,9 @@ public class ColorInterpolator
 	private int interpolateColor(Color c1, Color c2, double proportion)
 	{
 		double prop1 = 1 - proportion;
-//		double prop1 = proportion;
 		int red = (int) (c1.getRed() * prop1 + c2.getRed() * proportion);
 		int green = (int) (c1.getGreen() * prop1 + c2.getGreen() * proportion);
 		int blue = (int) (c1.getBlue() * prop1 + c2.getBlue() * proportion);
-//		int col = (255 << 24) | (red << 16) | (green << 8) | blue;
 		int col = (red << 16) | (green << 8) | blue;
 		return col;
 	}

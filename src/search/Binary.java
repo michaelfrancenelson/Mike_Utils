@@ -54,7 +54,9 @@ public class Binary {
 	public static int indexOfLessThanKey(double[] array, double key)
 	{
 		int start = 0; int end = array.length - 1;
-		if (key <= array[start]) throw new IllegalArgumentException("key must be greater than first element.");
+		if (key <= array[start]) 
+			throw new IllegalArgumentException(String.format(
+				"key %.5f must be greater than first element %.5f.", key, array[start]));
 
 		/* If the key is greater than the largest element, return the last1a index. */
 		if (key > array[end]) return end;

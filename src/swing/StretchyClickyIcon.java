@@ -3,10 +3,8 @@
  */
 package swing;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -19,7 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import images.ArrayDataImageBundle;
+import images.ArrayDataImageBundle.ArrayDataImageFactory;
 
 /**
  * An extension of the StretchIcon from: <br> 
@@ -46,7 +44,7 @@ import images.ArrayDataImageBundle;
  * 
  * 
  * @version 1.0 03/27/12
- * @author Darryl
+ * @author Darryl, modified by michaelfrancenelson
  */
 public class StretchyClickyIcon extends ImageIcon
 {
@@ -58,96 +56,53 @@ public class StretchyClickyIcon extends ImageIcon
 	protected boolean constantWidth;
 	private int width = 0;
 
-	protected int currentOriginX;
-	protected int currentOriginY;
-	protected int currentImageWidth;
-	protected int currentImageHeight; 
-	private int currentComponentWidth, currentComponentHeight;
+	protected int 
+	iconImgX, iconImgY, 
+	iconImgWidth, iconImgHeight, 
+	componentWidth, componentHeight;
 
-	private double clickedImageRatioX, clickedImageRatioY;
-	private int clickedImageColumn, clickedImageRow;
-	private int clickedSourceDataColumn, clickedSourceDataRow;
+	protected double[] mouseIconImgRatios;
+	protected double[] mouseComponentRatios;
 
-	protected int originalImageWidth, originalImageHeight;
-	private int currentDataPixelWidth;
+	protected int[] mouseCompCoord;
+	protected int[] mouseIconImgCoord;
+	protected int[] mouseDatArrayCoord;
 
+	protected int sourceImgWidth, sourceImgHeight;
+	private int currentDataPixelWidth, currentDataPixelHeight;
 
-
-
-
-
+	private StretchyClickyIcon iconToMatch;
+	private boolean matchHeight;
+	
+	public void setMatchIcon(StretchyClickyIcon i)
+	{
+		matchHeight = true;
+		iconToMatch = i;
+	}
+	
 	public StretchyClickyIcon() {}
 
 	/**
-	 * Determines whether the aspect ratio of the image is maintained.
+	 * Determines whether the aspect ratio of the image is maintained when resizing.
 	 * Set to <code>false</code> to allow the image to distort to fill the component.
 	 */
-	protected boolean fixedImageAspectRatio = true;
+	protected boolean keepAspectRatio = true;
 	private boolean verbose;
 	private double compAspectRatio;
-	private int clickedComponentColumn;
-	private int clickedComponentRow;
-	private double clickedComponentRatioX;
-	private double clickedComponentRatioY;
 
+	/** Print inner working messages to the console?  For testing. */
 	public void setVerbose(boolean b) { this.verbose = b; }
 
 	/** Calculate the aspect ratio of the original icon image. */
 	private void setImageAspectRatio()
 	{
-		Image img = getImage(); aspectRatio = getAspectRatio(img.getWidth(null), img.getHeight(null));
-		originalImageHeight = img.getHeight(null);
-		originalImageWidth = img.getWidth(null);
-
+		Image source = getImage(); aspectRatio = getAspectRatio(source.getWidth(null), source.getHeight(null));
+		sourceImgHeight = source.getHeight(null);
+		sourceImgWidth = source.getWidth(null);
 	}
 
-	public static void main(String[] args) 
-	{
-		//		franceDemo();
-		randomDataDemo();
-	}
-
-	public static void randomDataDemo()
-	{
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(new Dimension(1000, 700));
-
-		StretchyClickyIcon icon1 = ArrayDataImageBundle.createRandomPackage(11, 18).createIcon(true);
-		StretchyClickyIcon icon2 = ArrayDataImageBundle.createRandomPackage(11, 18).createIcon(false);
-		StretchyClickyIcon icon3 = ArrayDataImageBundle.createRandomPackage(11, 18).createIcon(false);
-		icon3.setConstantWidth(68);
-		JLabel label1 = new JLabel(icon1);
-		JLabel label2 = new JLabel(icon2);
-		JLabel label3 = new JLabel(icon3);
-
-		frame.setLayout(new GridLayout());
-		frame.add(label1);
-		frame.add(label2);
-		frame.add(label3);
-		frame.setVisible(true);
-
-	}
-	public static void franceDemo()
-	{
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(new Dimension(1000, 1002));
-
-		StretchyClickyIcon icon1 = new StretchyClickyIcon("testData/france.jpg");
-		icon1.setFixedWidth(500);
-		StretchyClickyIcon icon2 = new StretchyClickyIcon("testData/france.jpg");
-
-		JLabel label1 = new JLabel(icon1);
-		JLabel label2 = new JLabel(icon2);
-
-		frame.setLayout(new GridLayout());
-		frame.add(label1);
-		frame.add(label2);
-		frame.setVisible(true);
-	}
-
-	public void setFixedWidth(int width) { this.width = width; this.constantWidth = true; this.fixedImageAspectRatio = false; }
+	public void setFixedWidth(int width) 
+	{ this.width = width; this.constantWidth = true; this.keepAspectRatio = false; }
 
 	/**
 	 * Paints the icon.  The image is reduced or magnified to fit the component to which
@@ -170,184 +125,222 @@ public class StretchyClickyIcon extends ImageIcon
 	 * @see ImageIcon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
 	 */
 	@Override
-	public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
+	public synchronized void paintIcon(Component c, Graphics g, int x, int y)
+	{
 		Image image = getImage(); 
 		ImageObserver io = getImageObserver();
 
 		if (image == null) { return; }
 		Insets insets = ((Container) c).getInsets();
-		x = insets.left; y = insets.top;
+		iconImgX = insets.left; iconImgY = insets.top;
+		
+		this.componentWidth = c.getWidth() - iconImgX - insets.right;
+		this.componentHeight = c.getHeight() - iconImgY - insets.bottom;
+		this.iconImgWidth = componentWidth; this.iconImgHeight = componentHeight;
 
-
-
-
-		currentComponentWidth = c.getWidth() - x - insets.right;
-		currentComponentHeight = c.getHeight() - y - insets.bottom;
-		currentImageWidth = image.getWidth(c);
-		currentImageHeight = image.getHeight(c);
-
-		int newComponentWidth = currentComponentWidth;
-		int newComponentHeight = currentComponentHeight;
-
-		int newImageX = x, newImageY = y;
-		compAspectRatio = (double) currentComponentWidth / (double) currentComponentHeight;
+		compAspectRatio = (double) componentWidth / (double) componentHeight;
 
 		/* If keeping the original aspect ratio. */
-		if (fixedImageAspectRatio) {
+		if (keepAspectRatio) {
 			if (aspectRatio < compAspectRatio)
-			{
-				newComponentWidth = (int) ((double) currentComponentHeight * aspectRatio);
-			} else {
-				newComponentHeight = (int) ((double) currentComponentWidth / aspectRatio);
-			}
+				iconImgWidth = (int) ((double) componentHeight * aspectRatio);
+			else iconImgHeight = (int) ((double) componentWidth / aspectRatio);
 		}
 
 		if (constantWidth)
 		{ 
 			if (verbose) System.out.println("fixed width of " + width);
-			newComponentWidth = width;
-			this.currentImageWidth = width;
+			this.iconImgWidth = width; this.iconImgHeight = componentHeight;
 		}
 
-		newImageX += (currentComponentWidth - newComponentWidth) / 2;
-		newImageY += (currentComponentHeight - newComponentHeight) / 2;
+		iconImgX += (componentWidth - iconImgWidth) / 2;
+		iconImgY += (componentHeight - iconImgHeight) / 2;
+
 		if (verbose)
 		{
 			System.out.println("component aspect ratio: " + compAspectRatio);
 			System.out.println("image aspect ratio: " + aspectRatio);
-			System.out.println("old comp. width  = " + currentComponentWidth);
-			System.out.println("new comp. width  = " + newComponentWidth);
-			System.out.println("old comp height = " + currentComponentHeight);
-			System.out.println("new comp. height = " + newComponentHeight);
+			System.out.println("old comp. width  = " + componentWidth);
+			System.out.println("new image. width  = " + iconImgWidth);
+			System.out.println("old comp height = " + componentHeight);
+			System.out.println("new image. height = " + iconImgHeight);
 		}
 
-		currentOriginX = newImageX;
-		currentOriginY = newImageY;
-		this.currentImageHeight = newComponentHeight;
-		this.currentImageWidth = newComponentWidth;
-		this.currentDataPixelWidth = currentImageWidth / originalImageWidth;
-		g.drawImage(image, newImageX, newImageY, newComponentWidth, newComponentHeight, io == null ? c : io);
+		if (matchHeight)
+		{
+			iconImgHeight = iconToMatch.iconImgHeight;
+			iconImgY = iconToMatch.iconImgY;
+		}
+		
+		this.currentDataPixelWidth = this.iconImgWidth / sourceImgWidth;
+		this.currentDataPixelHeight = this.iconImgHeight / sourceImgHeight;
+		g.drawImage(image, iconImgX, iconImgY, iconImgWidth, iconImgHeight, io == null ? c : io);
 	}
+	
+	
+	
+	
 
-	public int getImageDataNRows() { return originalImageHeight; }
-	public int getImageDataNCols() { return originalImageWidth; }
+	public int getImageDataNRows() { return sourceImgHeight; }
+	public int getImageDataNCols() { return sourceImgWidth; }
+	public int getClickedDataX() { return mouseDatArrayCoord[0]; }
+	public int getClickedDataY() { return mouseDatArrayCoord[1]; }
+	private double getAspectRatio(int width, int height) { return (double) width / (double) height; }
+	public void setConstantWidth(int width) { this.width = width; this.constantWidth = true; this.keepAspectRatio = false;}
+	public int getImageHeight() { return iconImgHeight; }
+	public int getImageWidth() { return iconImgWidth; }
+	public int getX() { return iconImgX; } 
+	public int getY() { return iconImgY; }
+	public int getDataPixelWidth() { return currentDataPixelWidth;}
+	public int getDataPixelHeight() { return currentDataPixelHeight;}
 
-	private double boundedRatio (int relativeCoord, int dimLength)
+	private double boundedRatio (int relativeCoord, int dimSize)
 	{
 		return Math.max(
 				0.0,
 				Math.min(
 						1.0,
-						(double) relativeCoord / (double) dimLength));
+						(double) relativeCoord / (double) dimSize));
 	}
 
-	public void setMouseClick(MouseEvent arg0)
+	public void setMouse(MouseEvent arg0)
 	{
-		clickedComponentColumn = arg0.getX();
-		clickedComponentRow = arg0.getY();
-		clickedImageColumn = clickedComponentColumn - getX();
-		clickedImageRow = clickedComponentRow - getY();
+		mouseCompCoord = compClick(arg0);
+		mouseIconImgCoord = imgClick(mouseCompCoord);
 
-		clickedComponentRatioX = boundedRatio(clickedComponentColumn, currentComponentWidth);
-		clickedComponentRatioY = boundedRatio(clickedComponentRow, currentComponentHeight);
-		clickedImageRatioX = boundedRatio(clickedImageColumn, currentImageWidth);
-		clickedImageRatioY = boundedRatio(clickedImageRow, currentImageHeight);
+		mouseIconImgRatios = new double[]
+				{
+						boundedRatio(mouseIconImgCoord[0], iconImgWidth),
+						boundedRatio(mouseIconImgCoord[1], iconImgHeight)
+				};
 
-		clickedSourceDataColumn = Math.min(
-				originalImageWidth - 1,
-				(int) (clickedImageRatioX * (double) originalImageWidth));
-		clickedSourceDataRow = Math.min(
-				originalImageHeight - 1,
-				(int) (clickedImageRatioY * (double) originalImageHeight));
+		mouseDatArrayCoord = new int[]
+				{
+						Math.min(
+								sourceImgWidth - 1,
+								(int) (mouseIconImgRatios[0] * (double) sourceImgWidth)),
+						Math.min(
+								sourceImgHeight - 1,
+								(int) (mouseIconImgRatios[1] * (double) sourceImgHeight))
+				};
+
+		mouseComponentRatios = new double[]
+				{
+						boundedRatio(mouseCompCoord[0], componentWidth),
+						boundedRatio(mouseCompCoord[1], componentHeight)
+				};
 	}
-	
-	public int componentRowFromDataRow(int dataRow)
+
+
+	private int[] compClick(MouseEvent arg0)
 	{
-		double rowRatio = boundedRatio(dataRow, originalImageHeight);
-		int displayImageRow = currentOriginY + (int) ((double) currentImageHeight * rowRatio);
+		return new int[] { arg0.getX(), arg0.getY() };
+	}
+
+	private int[] imgClick(int[] xy)
+	{
+		return (new int[] {xy[0] - this.getX(), xy[1] - this.getY()});
+	}
+
+	public int[] getDataMouseCoords(MouseEvent arg0)
+	{
+		int[] compCoord = compClick(arg0);
+		int[] iconImgCoord = imgClick(compCoord);
+
+		double[] iconImgRatios = new double[]
+				{
+						boundedRatio(iconImgCoord[0], iconImgWidth),
+						boundedRatio(iconImgCoord[1], iconImgHeight)
+				};
+
+		int[] datArrayCoord = new int[]
+				{
+						Math.min(
+								sourceImgWidth - 1,
+								(int) (iconImgRatios[0] * (double) sourceImgWidth)),
+						Math.min(
+								sourceImgHeight - 1,
+								(int) (iconImgRatios[1] * (double) sourceImgHeight))
+				};
+
+		return datArrayCoord;
+	}
+
+	public int componentYFromDataRow(int dataRow)
+	{
+		double rowRatio = boundedRatio(dataRow, sourceImgHeight);
+		int displayImageRow = iconImgY + (int) ((double) iconImgHeight * rowRatio);
 		return displayImageRow;
 	}
-	public int componentColumnFromDataCol(int dataColumn)
+
+	public int componentXFromDataCol(int dataColumn)
 	{
-		double rowRatio = boundedRatio(dataColumn, originalImageWidth);
-		int displayImageColumn = currentOriginX + (int) ((double) currentImageWidth * rowRatio);
+		double rowRatio = boundedRatio(dataColumn, sourceImgWidth);
+		int displayImageColumn = iconImgX + (int) ((double) iconImgWidth * rowRatio);
 		return displayImageColumn;
 	}
-	
-	public int getDataPixelWidth() { return currentDataPixelWidth;}
-	
+
 	public void printComponentClick()
 	{	System.out.println(String.format("Component mouse click at (%d, %d)", 
-			clickedComponentColumn, clickedComponentRow));
+			mouseCompCoord[0], mouseCompCoord[1]));
 	}
 
 	public void printDisplayImageClick()
 	{	System.out.println(String.format("Displayed image mouse click at (%d, %d)", 
-			clickedImageColumn, clickedImageRow));
+			mouseIconImgCoord[0], mouseIconImgCoord[1]));
 	}
 
 	public void printComponentClickRatio()
 	{ System.out.println(String.format("Component mouse click at %.2f%% of component width.", 
-			100.0 * clickedComponentRatioX));
+			100.0 * mouseComponentRatios[0]));
 	System.out.println(String.format("Component mouse click at %.2f%% of component height.", 
-			100.0 * clickedComponentRatioY));
+			100.0 * mouseComponentRatios[1]));
 	}
 
 	public void printDisplayImageClickRatio()
 	{
 		System.out.println(String.format("Icon image mouse click at %.2f%% of image width.", 
-				100.0 * clickedImageRatioX));
+				100.0 * mouseIconImgRatios[0]));
 		System.out.println(String.format("Icon image mouse click at %.2f%% of image height.",
-				100.0 * clickedImageRatioY));
+				100.0 * mouseIconImgRatios[1]));
 	}
 
 	public void printDataClick()
 	{
 		System.out.println(String.format("Source mouse click at (%d, %d)", 
-				clickedSourceDataColumn, clickedSourceDataRow));
+				mouseDatArrayCoord[0], mouseDatArrayCoord[1]));
 	}
-
-	public int getClickedDataColumn() { return clickedSourceDataColumn; }
-	public int getClickedDataRow() { return clickedSourceDataRow; }
 
 	public int getDisplayedColumn(int dataColumn)
 	{
 		double xProportion =
-				((double) dataColumn + 0.5) / (double) originalImageWidth;
+				((double) dataColumn + 0.5) / (double) sourceImgWidth;
 
-		int proportionalX = (int)((double)currentImageWidth * xProportion);
+		int proportionalX = (int)((double)iconImgWidth * xProportion);
 		if (verbose) printDisplayImageDimensions();
 		return proportionalX;
 	}
 
 	void printDisplayImageDimensions()
 	{
-		System.out.println("icon image display width: " + currentImageWidth);
-		System.out.println("icon image display height: " + currentImageHeight);
-		System.out.println("icon image origin X " + currentOriginX);
-		System.out.println("icon image origin Y " + currentOriginY);
+		System.out.println("icon image display width: " + iconImgWidth);
+		System.out.println("icon image display height: " + iconImgHeight);
+		System.out.println("icon image origin X " + iconImgX);
+		System.out.println("icon image origin Y " + iconImgY);
 	}
 
 	void printDisplayImageCornerCoords()
 	{
-		int x0 = currentOriginX, x1 = currentOriginX + currentImageWidth;
-		int y0 = currentOriginY, y1 = currentOriginY + currentImageHeight;
+		int x0 = iconImgX, x1 = iconImgX + iconImgWidth;
+		int y0 = iconImgY, y1 = iconImgY + iconImgHeight;
 		System.out.println(String.format("image coords: (%d, %d), (%d, %d), (%d, %d), (%d, %d)",
 				x0, y0, x0, y1, x1, y0, x1, y1));
 	}
 	void printSourceImageDimensions()
 	{
 		System.out.println(String.format("source image height: %d, source image width: %d",
-				originalImageHeight, originalImageWidth));	
-
+				sourceImgHeight, sourceImgWidth));	
 	}
-
-	private double getAspectRatio(int width, int height) { return (double) width / (double) height; }
-	public void setConstantWidth(int width) { this.width = width; this.constantWidth = true; this.fixedImageAspectRatio = false;}
-	public int getImageHeight() { return currentImageHeight; };
-	public int getImageWidth() { return currentImageWidth; }
-	public int getX() { return currentOriginX; }; 
-	public int getY() { return currentOriginY; }
 
 	public Graphics getIconGraphics() { return getImage().getGraphics(); }
 
@@ -385,7 +378,7 @@ public class StretchyClickyIcon extends ImageIcon
 	 * @see ImageIcon#ImageIcon(byte[])
 	 */
 	public StretchyClickyIcon(byte[] imageData, boolean proportionate) {
-		super(imageData); this.fixedImageAspectRatio = proportionate; setImageAspectRatio();
+		super(imageData); this.keepAspectRatio = proportionate; setImageAspectRatio();
 	}
 
 	/**
@@ -415,7 +408,7 @@ public class StretchyClickyIcon extends ImageIcon
 	 * @see ImageIcon#ImageIcon(byte[], java.lang.String)
 	 */
 	public StretchyClickyIcon(byte[] imageData, String description, boolean proportionate) {
-		super(imageData, description); this.fixedImageAspectRatio = proportionate; setImageAspectRatio();
+		super(imageData, description); this.keepAspectRatio = proportionate; setImageAspectRatio();
 	}
 
 	/**
@@ -438,7 +431,7 @@ public class StretchyClickyIcon extends ImageIcon
 	 * @see ImageIcon#ImageIcon(java.awt.Image) 
 	 */
 	public StretchyClickyIcon(Image image, boolean proportionate) {
-		super(image); setImageAspectRatio(); this.fixedImageAspectRatio = proportionate; 
+		super(image); setImageAspectRatio(); this.keepAspectRatio = proportionate; 
 	}
 
 	/**
@@ -463,7 +456,7 @@ public class StretchyClickyIcon extends ImageIcon
 	 * @see ImageIcon#ImageIcon(java.awt.Image, java.lang.String)
 	 */
 	public StretchyClickyIcon(Image image, String description, boolean proportionate) {
-		super(image, description); setImageAspectRatio(); this.fixedImageAspectRatio = proportionate; }
+		super(image, description); setImageAspectRatio(); this.keepAspectRatio = proportionate; }
 
 	/**
 	 * Creates a <CODE>StretchIcon</CODE> from the specified file.
@@ -485,7 +478,7 @@ public class StretchyClickyIcon extends ImageIcon
 	 * @see ImageIcon#ImageIcon(java.lang.String)
 	 */
 	public StretchyClickyIcon(String filename, boolean proportionate) {
-		super(filename); setImageAspectRatio(); this.fixedImageAspectRatio = proportionate; }
+		super(filename); setImageAspectRatio(); this.keepAspectRatio = proportionate; }
 
 	/**
 	 * Creates a <CODE>StretchIcon</CODE> from the specified file.
@@ -509,7 +502,7 @@ public class StretchyClickyIcon extends ImageIcon
 	 * @see ImageIcon#ImageIcon(java.awt.Image, java.lang.String)
 	 */
 	public StretchyClickyIcon(String filename, String description, boolean proportionate) {
-		super(filename, description); setImageAspectRatio(); this.fixedImageAspectRatio = proportionate; }
+		super(filename, description); setImageAspectRatio(); this.keepAspectRatio = proportionate; }
 
 	/**
 	 * Creates a <CODE>StretchIcon</CODE> from the specified URL.
@@ -531,7 +524,7 @@ public class StretchyClickyIcon extends ImageIcon
 	 * @see ImageIcon#ImageIcon(java.net.URL)
 	 */
 	public StretchyClickyIcon(URL location, boolean proportionate) {
-		super(location); setImageAspectRatio(); this.fixedImageAspectRatio = proportionate; }
+		super(location); setImageAspectRatio(); this.keepAspectRatio = proportionate; }
 
 	/**
 	 * Creates a <CODE>StretchIcon</CODE> from the specified URL.
@@ -555,7 +548,55 @@ public class StretchyClickyIcon extends ImageIcon
 	 * @see ImageIcon#ImageIcon(java.net.URL, java.lang.String)
 	 */
 	public StretchyClickyIcon(URL location, String description, boolean proportionate) {
-		super(location, description); setImageAspectRatio(); this.fixedImageAspectRatio = proportionate; }
+		super(location, description); setImageAspectRatio(); this.keepAspectRatio = proportionate; }
+
+	public static void main(String[] args) 
+	{
+		franceDemo();
+		randomDataDemo();
+	}
+
+	public static void randomDataDemo()
+	{
+		JFrame frame = StretchyClickyDataJLabel.getFrame("StretchyClickyIcon random data demo");
+
+		StretchyClickyIcon icon1 = ArrayDataImageFactory.getRandomBundle(11, 18).createIcon(true);
+		StretchyClickyIcon icon2 = ArrayDataImageFactory.getRandomBundle(11, 18).createIcon(false);
+		StretchyClickyIcon icon3 = ArrayDataImageFactory.getRandomBundle(11, 18).createIcon(false);
+		icon3.setConstantWidth(68);
+		JLabel label1 = new JLabel(icon1);
+		JLabel label2 = new JLabel(icon2);
+		JLabel label3 = new JLabel(icon3);
+
+//		icon3.forceHeight = true;
+//		icon3.forcedHeight = 45;
+		
+//		label3.setForceHeight(true);
+//		label3.setForcedHeight(45);
+		
+		frame.setLayout(new GridLayout());
+		frame.add(label1);
+		frame.add(label2);
+		frame.add(label3);
+		frame.setVisible(true);
+
+	}
+	public static void franceDemo()
+	{
+		JFrame frame = StretchyClickyDataJLabel.getFrame("StretchyClickyIcon image file demo");
+
+		StretchyClickyIcon icon1 = new StretchyClickyIcon("testData/france.jpg");
+		icon1.setFixedWidth(500);
+		StretchyClickyIcon icon2 = new StretchyClickyIcon("testData/france.jpg");
+
+		JLabel label1 = new JLabel(icon1);
+		JLabel label2 = new JLabel(icon2);
+
+		frame.setLayout(new GridLayout());
+		frame.add(label1);
+		frame.add(label2);
+		frame.setVisible(true);
+	}
 
 
 }
