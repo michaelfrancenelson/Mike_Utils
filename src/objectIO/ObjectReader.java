@@ -119,7 +119,7 @@ public class ObjectReader {
 	}
 
 
-	protected <T extends ObjectReader> void initializeInstanceFieldsToNA(T o)
+	public <T extends ObjectReader> void initializeInstanceFieldsToNA(T o)
 	{
 		@SuppressWarnings("unchecked")
 		Class<T> clazz = (Class<T>)o.getClass();
@@ -356,7 +356,8 @@ public class ObjectReader {
 		{ if (st.length > 0) 
 		{
 			temp = new String[nCols];
-			for (int i = 0; i < st.length; i++) temp[i] = st[i];
+			for (int i = 0; i < nCols; i++) temp[i] = st[i];
+//			for (int i = 0; i < st.length; i++) temp[i] = st[i];
 			newRows.add(temp); }
 		}
 		return newRows;

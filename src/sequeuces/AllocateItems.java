@@ -21,7 +21,6 @@ public class AllocateItems {
 		maxBinSize = 10;
 		seq = allocateCountToBins(total, maxBinSize);
 		for (int i : seq) System.out.println(" " + i);
-//			seq = allocateCounts(total, maxBinSize);
 	}
 	
 	public static int[] allocateCountToBins(int total, int maxBinSize)

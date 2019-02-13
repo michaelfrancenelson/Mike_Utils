@@ -29,7 +29,6 @@ public class ObjectReporter<T> {
 	
 	public ObjectReporter() {}
 	
-	
 	public static <T> ObjectReporter<T> factory(Class<T> clazz, String... additionalColumnNames)
 	{
 		ObjectReporter<T> out = new ObjectReporter<>();
@@ -49,8 +48,6 @@ public class ObjectReporter<T> {
 		return out;
 	}
 	
-	
-	
 	public void appendToReport(Class<T> clazz, Object... extraColumns)
 	{
 		T t = null;
@@ -59,7 +56,6 @@ public class ObjectReporter<T> {
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		
 		
 		writer.addValues(processor.write(t, processorHeaders, null));
 		for (Object st : extraColumns) writer.addValue(st.toString());
@@ -79,13 +75,18 @@ public class ObjectReporter<T> {
 	}
 
 	/** Write the data to file and close the reporter. */
-	public void write(String filename) throws IOException
+	public void write(String filename)
 	{
 		writer.close();
 		streamOut.toString();
-		FileWriter writer = new FileWriter(filename);
-		writer.write(streamOut.toString());
-		writer.close();
+		FileWriter writer;
+		try {
+			writer = new FileWriter(filename);
+			writer.write(streamOut.toString());
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/** Sets up the headers for the row processor and the output file. */
