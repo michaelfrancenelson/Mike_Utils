@@ -3,6 +3,8 @@ package sampling;
 import cern.jet.random.Binomial;
 import cern.jet.random.engine.RandomEngine;
 import sequeuces.Sequences;
+import umontreal.ssj.randvar.BinomialGen;
+import umontreal.ssj.rng.RandomStream;
 
 /**
  *  @author michaelfrancenelson
@@ -26,6 +28,7 @@ public class MultinomialSample {
 	 * @param re 
 	 * @return Counts of items randomly distributed to the categories.
 	 */
+	@Deprecated
 	public static int[] sample(int n, double[] p, RandomEngine re)
 	{
 
@@ -53,6 +56,33 @@ public class MultinomialSample {
 		return out;
 	}
 
+	public static int[] sample(int n, double[] p, RandomStream rs)
+	{
+		int[] out = new int[p.length];
+		if (n == 0) return out;
+		
+		int remaining = n;
+		int count = 0;
+		double cumulativeMass = 0.0;
+
+		for (int i = 0; i < p.length; i++)
+		{
+			double prob = Math.min(1.0, Math.max(0.0, p[i] / (1.0 - cumulativeMass)));
+			if (remaining > 0 && prob > 0.0)
+			{
+				if (prob >= 1.0) count = remaining;
+				else count = BinomialGen.nextInt(rs, remaining, prob);
+			}
+
+			else count = 0;
+			out[i] = count;
+			remaining -= count;
+			cumulativeMass += p[i];
+		}
+		return out;
+	}
+	
+	
 	/** Generate random, multinomially-distributed variates
 	 * 
 	 *   This is the same method as rmultinom() in R: <br> 
@@ -72,11 +102,24 @@ public class MultinomialSample {
 
 
 	/** Generate a multinomial sample with equal probabilities for each category. */
+	@Deprecated
 	public static int[] sample(int n, int nCategories, RandomEngine re)
 	{
 		double[] weights = new double[nCategories];
 		double weight = 1.0 / ((double) nCategories);
 
+		for (int i = 0; i < weights.length; i++) {
+			weights[i] = weight;
+		}
+		return sample(n, weights, re);
+	}
+	
+	/** Generate a multinomial sample with equal probabilities for each category. */
+	public static int[] sample(int n, int nCategories, RandomStream re)
+	{
+		double[] weights = new double[nCategories];
+		double weight = 1.0 / ((double) nCategories);
+		
 		for (int i = 0; i < weights.length; i++) {
 			weights[i] = weight;
 		}
