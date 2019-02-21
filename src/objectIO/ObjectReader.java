@@ -86,13 +86,14 @@ public class ObjectReader {
 				case("double"):  if (f.getDouble(o)    == NON_INITIALIZED_DOUBLE)  b = false; break;
 				case("Double"):  if (((double) f.getDouble(o))    == NON_INITIALIZED_DOUBLE)  b = false; break;
 				case("boolean"): if (f.get(o)          == null)                    b = false; break;
-//				case("Boolean"): if ((boolean) f.get(o)          == null)                    b = false; break;
 				case("String"):  if ((String) f.get(o) == NON_INITIALIZED_STRING)  b = false; break;
 				}
+				if (f.get(o) == null) throw new IllegalArgumentException("Field " + fName + " not found in parameter file");
+				if (verboseFields) System.out.print(System.lineSeparator() + "field " + fName);
 				fVal = f.get(o).toString();
 			} catch (IllegalArgumentException | IllegalAccessException e1) { e1.printStackTrace(); } 
 			if (b == false) throw new IllegalArgumentException(message3);
-			if (verboseFields) System.out.println("field " + fName + " is initialized to " + fVal);
+			if (verboseFields) System.out.print(" is initialized to " + fVal);
 		}
 		return true;
 	}
@@ -130,12 +131,17 @@ public class ObjectReader {
 	{ for (Field f : clazz.getDeclaredFields()) if (Modifier.isStatic(f.getModifiers())) initializeFieldToNA(f, null, false); }
 
 	/** Verify that all the fields that have the "Initialized" annotation are initialized. */
-	protected static <T extends ObjectReader> boolean areInstanceFieldsInitailized(
+	public static <T extends ObjectReader> boolean areInstanceFieldsInitailized(
 			T t, boolean verboseFieldName, boolean verboseFieldValue)
 	{
 		@SuppressWarnings("unchecked")
 		Class<T> clazz = (Class<T>) t.getClass(); 
-		for (Field f : clazz.getDeclaredFields()) if (!Modifier.isStatic(f.getModifiers())) isFieldInitialized(f, t, true, verboseFieldValue); 
+		for (Field f : clazz.getDeclaredFields()) 
+		{
+			if (!Modifier.isStatic(f.getModifiers()))
+				isFieldInitialized(f, t, true, verboseFieldValue); 
+			else isFieldInitialized(f, t, false, verboseFieldValue); 
+		}
 		return true;
 	}
 
@@ -201,9 +207,16 @@ public class ObjectReader {
 	 * @param c Class of objects (must extend {@link ObjectReader}).
 	 * @return the POJO 
 	 */
-	public static <T extends ObjectReader> List<T> readObjectListRows(String filename, Class<T> c)
+	public static <T extends ObjectReader> List<T> readObjectListRows(
+			String filename, Class<T> c)
 	{ return readObjectList(filename, c, null); }
 
+	/**Create POJOs from input file with data arranged in columns.  <br>
+	 * @param filename input file (Excel or csv)
+	 * @param c Class of objects (must extend {@link ObjectReader}).
+	 * @param sheetname the name of the sheet int the Excel file (ignored if file is csv).
+	 * @return the POJO 
+	 */
 	public static <T extends ObjectReader> List<T> readObjectListRows(String filename, String sheetname, Class<T> c)
 	{ return readObjectList(filename, c, sheetname); }
 
@@ -354,10 +367,11 @@ public class ObjectReader {
 		List<String[]> newRows = new ArrayList<>();
 		for (String[] st : rows) 
 		{ if (st.length > 0) 
+//		{ if (st.length >= nCols) 
 		{
 			temp = new String[nCols];
-			for (int i = 0; i < nCols; i++) temp[i] = st[i];
-//			for (int i = 0; i < st.length; i++) temp[i] = st[i];
+			for (int i = 0; i < nCols; i++) if (i >= st.length) temp[i] = ""; else temp[i] = st[i];
+			//			for (int i = 0; i < st.length; i++) temp[i] = st[i];
 			newRows.add(temp); }
 		}
 		return newRows;
