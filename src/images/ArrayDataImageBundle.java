@@ -24,6 +24,8 @@ public class ArrayDataImageBundle
 	private BufferedImage img;
 	private ColorInterpolator ci;
 
+	private boolean isBoolean = false;
+
 	private double[][] dataDouble = null;
 	private int[][] dataInt = null;
 	private double[] doubleMinMax;
@@ -32,6 +34,7 @@ public class ArrayDataImageBundle
 	private String dataType;
 
 	public ArrayDataImageBundle() {}
+	public void makeBoolean() { this.isBoolean = true; }
 
 	public static class ArrayDataImageFactory
 	{
@@ -44,7 +47,7 @@ public class ArrayDataImageBundle
 			ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], naDouble, naColor);
 			return getBundle(data, name, ci, naDouble, naInt, naColor);
 		}
-		
+
 		public static ArrayDataImageBundle getBundle(
 				double[][] data, 
 				String name, ColorInterpolator ci,
@@ -58,7 +61,7 @@ public class ArrayDataImageBundle
 			out.setDouble(data);
 			return out;
 		}
-		
+
 		public static ArrayDataImageBundle getBundle(
 				int[][] data, 
 				String name, Color[] colors, 
@@ -68,7 +71,7 @@ public class ArrayDataImageBundle
 			ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], naDouble, naColor);
 			return getBundle(data, name, ci, naDouble, naInt, naColor);
 		}
-		
+
 		public static ArrayDataImageBundle getBundle(
 				int[][] data, 
 				String name, ColorInterpolator ci,
@@ -94,7 +97,7 @@ public class ArrayDataImageBundle
 			for (int y = 0; y < out[0].length; y++) { out[0][y] = data[y]; }
 			return getBundle(out, name, ci, naDouble, naInt, naColor);
 		}
-		
+
 		/** Get an image bundle for 1D double data. */
 		public static ArrayDataImageBundle getBundle(
 				double[] data, 
@@ -111,13 +114,13 @@ public class ArrayDataImageBundle
 				int[][] data, 
 				String name, Color[] colors) 
 		{ return getBundle(data, name, colors, Double.MIN_VALUE, Integer.MIN_VALUE, Color.gray); }
-		
+
 		/** Get image bundle with default na values. */
 		public static ArrayDataImageBundle getBundle(
 				double[][] data, 
 				String name, Color[] colors) 
 		{ return getBundle(data, name, colors, Double.MIN_VALUE, Integer.MIN_VALUE, Color.gray); }
-		
+
 		public static ArrayDataImageBundle getVerticalGradientBundle(
 				ArrayDataImageBundle bundle, int nSteps)
 		{
@@ -138,7 +141,7 @@ public class ArrayDataImageBundle
 					bundle.getMinValue(), bundle.getMaxValue(), nSteps);
 			return getBundle(data, bundle.dataName, bundle.ci, bundle.na_double, bundle.na_int, bundle.na_color);
 		}
-		
+
 		public static ArrayDataImageBundle getRandomBundle(int nRows, int nCols)
 		{
 			int nIntColors = 10;
@@ -157,9 +160,9 @@ public class ArrayDataImageBundle
 		}
 	}
 
-	
-	
-	
+
+
+
 	/**
 	 * Note: the input coordinates are in terms of the data array size,
 	 * not the displayed size of the image.
@@ -210,16 +213,32 @@ public class ArrayDataImageBundle
 			img.setRGB(x, y, getCi().getColor(array[x][y]));
 	}
 
-	private String getDoubleVal() { return String.format(mouseClickArrayDblFormat, 
-			dataDouble[queryX][queryY]);}
-	private String getIntVal() { return String.format("%d", dataInt[queryX][queryY]); }
+	private String getDoubleVal() {
+		Double val = dataDouble[queryX][queryY];
+		String out;
+		if (val == na_double) out = "NA";
+		else out = String.format(mouseClickArrayDblFormat, val);
+		return out;
+	}
+	private String getIntVal() { 
+		Integer val = dataInt[queryX][queryY];
+		String out;
+		out = String.format("%d", val);
+		if (isBoolean)
+		{
+			if(val == 0) out = "false"; 
+			else out = "true"; 
+		}
+		if (val == na_int) out = "NA";
+		return out;
+	}
 
 	public double getMinValue() { return doubleMinMax[0]; }
 	public double getMaxValue() { return doubleMinMax[1]; }
 
 	public StretchyClickyIcon createIcon(boolean proportionate) 
 	{ return new StretchyClickyIcon(img, proportionate); }
-	
+
 	public StretchyClickyIcon createIcon(boolean proportionate, int iconFixedWidth) 
 	{ 
 		StretchyClickyIcon icon = new StretchyClickyIcon(img, proportionate);
@@ -317,7 +336,7 @@ public class ArrayDataImageBundle
 		setImage(this.dataInt);
 		getValInterface = () -> getIntVal();
 	}
-	
+
 	@Deprecated
 	public static ArrayDataImageBundle createGradientBundle(ArrayDataImageBundle bundle, int nSteps)
 	{

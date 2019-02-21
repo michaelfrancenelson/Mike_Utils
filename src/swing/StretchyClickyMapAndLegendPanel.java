@@ -33,6 +33,8 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 	
 	protected int nLegendSteps = 300;
 	
+	private boolean isBoolean;
+	
 	protected double[] legendBreaksDouble;
 	protected int[] legendBreaksInt;
 	protected double legendTicksBuffer = 0.02;
@@ -43,6 +45,8 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 	
 	protected StretchyClickyDataJLabel mapLabel, legendLabel;
 
+	public void makeBoolean(boolean b) { this.isBoolean = b; }
+	
 	public void setHoverPane(JTextPane pane)
 	{
 		mapLabel.setHoverPane(pane);
@@ -107,6 +111,10 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 //				((StretchyClickyIcon)legendLabel.getIcon()).getImageDataNRows() - 1, 
 //				nTicks);
 		
+		if (isBoolean)// & ticksRows.length == 2)
+			legendLabel.drawTextOnIcon(ticksRows, new int[] {0}, 
+					new String[] {"false",  "true"}, legendFontColor, legendFont);
+		else
 		legendLabel.drawTextValuesOnIcon(ticksRows, 0, legendFontColor, legendFont); 
 	}
 	

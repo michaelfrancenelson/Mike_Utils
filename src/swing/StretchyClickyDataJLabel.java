@@ -527,6 +527,7 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 		{
 			mouseCoord = StretchyClickyDataJLabel.this.icon.getDataMouseCoords(arg0);
 			value = StretchyClickyDataJLabel.this.imageDataBundle.getDataArrayVal(mouseCoord);
+			
 
 			if (pane != null)
 			{
