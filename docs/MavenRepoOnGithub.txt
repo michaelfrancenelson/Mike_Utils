@@ -9,11 +9,12 @@ git branch repository
 git checkout repository
 rm -R *
 
-mvn install:install-file -DgroupId=michaelfrancenelson -DartifactId=Mike_Utils -Dversion=1.0.01 -Dfile=C:/github/MikeUtilsJava2/target/mvn-repo/MikeUtilsJava2/MikeUtilsJava2/1.0.01/MikeUtilsJava2-1.0.01.jar r -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=.  -DcreateChecksum=true
+mvn install:install-file -DgroupId=MikeUtilsJava2 -DartifactId=Mike_Utils -Dversion=1.0.01 -Dfile=C:/github/MikeUtilsJava2/target/mvn-repo/MikeUtilsJava2/MikeUtilsJava2/1.0.01/MikeUtilsJava2-1.0.01.jar -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=.  -DcreateChecksum=true
 
-
-
-mvn install:install-file -DgroupId=michaelfrancenelson -DartifactId=Mike_Utils -Dversion=1.0.01 -Dfile=C:/github/MikeUtilsJava2/target/mvn-repo/MikeUtilsJava2/MikeUtilsJava2/1.0.0/MikeUtilsJava2-1.0.0.jar -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=.  -DcreateChecksum=true
 git add -A . && git commit -m "released version X.Y.Z"
 
 git push origin repository
+
+
+mvn install:install-file -DgroupId=YOUR_GROUP -DartifactId=YOUR_ARTIFACT -Dversion=YOUR_VERSION -Dfile=YOUR_JAR_FILE -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=.  -DcreateChecksum=true
+
