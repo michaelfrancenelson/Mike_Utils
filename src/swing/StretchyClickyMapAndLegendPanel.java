@@ -37,6 +37,8 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 	protected int[] legendBreaksInt;
 	protected double legendTicksBuffer = 0.02;
 	
+	protected Double legendTextOffsetX, legendTextOffsetY;
+	
 	Font legendFont; Color legendFontColor;
 	
 	protected StretchyClickyDataJLabel mapLabel, legendLabel;
@@ -49,11 +51,12 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 	
 	public static StretchyClickyMapAndLegendPanel factory(
 			ArrayDataImageBundle bundle, boolean left, Font font, Color fontColor)
-	{ return factory(bundle, left, font, fontColor, 300, 5, 100, 0.02); }
+	{ return factory(bundle, left, font, fontColor, 300, 5, 100, 0.02, null, null); }
 	
 	public static StretchyClickyMapAndLegendPanel factory(
 			ArrayDataImageBundle bundle, boolean left, Font font, Color fontColor,
-			int nLegendSteps, int nLegendTicks, int legendWidth, double legendTicksBuffer )
+			int nLegendSteps, int nLegendTicks, int legendWidth, double legendTicksBuffer,
+			Double legendTextOffsetX, Double legendTextOffsetY)
 	{
 		StretchyClickyMapAndLegendPanel s = new StretchyClickyMapAndLegendPanel();
 		s.left = left;
@@ -64,7 +67,8 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 		s.nLegendTicks = nLegendTicks;
 		s.legendWidth = legendWidth;
 		s.legendTicksBuffer = legendTicksBuffer;
-		
+		s.legendTextOffsetX = legendTextOffsetX;
+		s.legendTextOffsetY = legendTextOffsetY;
 		s.buildMaps();
 		s.buildLayout();
 		return s;		
@@ -77,7 +81,7 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 		this.mapLabel = StretchyClickyDataJLabel.factory(bundle, true);
 		this.legendLabel = StretchyClickyDataJLabel.factory(
 				ArrayDataImageFactory.getVerticalGradientBundle(bundle, nLegendSteps), 
-				legendWidth);
+				legendWidth, legendTextOffsetX, legendTextOffsetY);
 		legendLabel.setMatchIcon(mapLabel.icon);
 
 	}
@@ -86,11 +90,22 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 	{ this.legendFontColor = color; this.legendFont = font; setLegendLabels(); }
 	public void setLegendLabels()
 	{
+		int nRows = ((StretchyClickyIcon)legendLabel.getIcon()).getImageDataNRows();
+
 		int nTicks = nLegendTicks;
-		int[] ticksRows = Sequences.spacedIntervals(
-				0, 
-				((StretchyClickyIcon)legendLabel.getIcon()).getImageDataNRows() - 1, 
-				nTicks);
+//		int startOffset = (int) (legendTicksBuffer * ((double)nLegendTicks));
+		int startOffset = (int) (legendTicksBuffer * ((double)nRows));
+		
+		int start = 0 + startOffset;
+		int end = nRows - 1 - startOffset;
+		
+			
+			
+			
+		int[] ticksRows = Sequences.spacedIntervals(start, end, nTicks);
+//				0, 
+//				((StretchyClickyIcon)legendLabel.getIcon()).getImageDataNRows() - 1, 
+//				nTicks);
 		
 		legendLabel.drawTextValuesOnIcon(ticksRows, 0, legendFontColor, legendFont); 
 	}
@@ -200,8 +215,15 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 	{
 		JFrame frame = StretchyClickyDataJLabel.getFrame("Draw on map demo");
 		
-		ArrayDataImageBundle bundle = ArrayDataImageFactory.getRandomBundle(12, 17);
-		StretchyClickyMapAndLegendPanel map = StretchyClickyMapAndLegendPanel.factory(bundle, true, frame.getFont(), Color.black);
+		ArrayDataImageBundle bundle = ArrayDataImageFactory.getRandomBundle(12, 17, 200);
+		StretchyClickyMapAndLegendPanel map = StretchyClickyMapAndLegendPanel.factory(
+				bundle, true, frame.getFont(), Color.black,
+				300, 5, 100, 0.05, 
+				-0.5, null);
+//		
+//		ArrayDataImageBundle bundle, boolean left, Font font, Color fontColor,
+//		int nLegendSteps, int nLegendTicks, int legendWidth, double legendTicksBuffer,
+//		Double legendTextOffsetX, Double legendTextOffsetY
 		map.setLegendLabels(Color.black, frame.getFont());
 		
 		frame.add(map); frame.setVisible(true);

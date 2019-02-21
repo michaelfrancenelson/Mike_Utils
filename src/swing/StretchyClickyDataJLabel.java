@@ -60,6 +60,9 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 	protected boolean keepIconProportion;
 	protected int iconFixedWidth;
 
+	protected Double textOffsetY = null, textOffsetX = null;
+
+
 	protected MouseHoverData hover;
 
 	protected MouseListener mmm = new MouseListener() {
@@ -85,6 +88,7 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 		@Override public void mouseReleased(MouseEvent arg0) {}
 	};
 
+
 	/**
 	 * @param ap
 	 * @param keepIconProportion keep the image aspect ratio the same as the size of the data in ap? 
@@ -94,11 +98,24 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 	 */
 	public static StretchyClickyDataJLabel factory(
 			ArrayDataImageBundle ap, boolean keepIconProportion, int iconFixedWidth)
+	{ return factory(ap, keepIconProportion, iconFixedWidth, null, null); }
+	/**
+	 * @param ap
+	 * @param keepIconProportion keep the image aspect ratio the same as the size of the data in ap? 
+	 * @param iconFixedWidth Keep the width of the image constant (but adjust height and aspect ratio)?
+	 * @param pointScale Scaling factor for the size of points drawn over the image
+	 * @return
+	 */
+	public static StretchyClickyDataJLabel factory(
+			ArrayDataImageBundle ap, boolean keepIconProportion, int iconFixedWidth,
+			Double textOffsetX, Double textOffsetY)
 	{
 		StretchyClickyDataJLabel s = new StretchyClickyDataJLabel();
 		s.imageDataBundle = ap; 
 		s.keepIconProportion = keepIconProportion;
 		s.iconFixedWidth = iconFixedWidth;
+		s.textOffsetX = textOffsetX;
+		s.textOffsetY = textOffsetY;
 		s.setIcon();
 		s.addMouseMotionListener(s);
 		return s;
@@ -107,9 +124,18 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 	/** A label with fixed image aspect ratio and points at same size as data pixels. */
 	public static StretchyClickyDataJLabel factory(ArrayDataImageBundle ap, boolean keepIconProportion)
 	{	return factory(ap, keepIconProportion, Integer.MIN_VALUE);}
+	
+	public static StretchyClickyDataJLabel factory(
+			ArrayDataImageBundle ap, boolean keepIconProportion,
+			Double textOffsetX, Double textOffsetY)	
+	{	return factory(ap, keepIconProportion, Integer.MIN_VALUE, textOffsetX, textOffsetY); }
+
 	/** A label with adjusting image aspect ratio but fixed width and points stretched to be the same size as data pixels. */
 	public static StretchyClickyDataJLabel factory(ArrayDataImageBundle ap, int iconFixedWidth)	
 	{ return factory(ap, false, iconFixedWidth); }
+	public static StretchyClickyDataJLabel factory(ArrayDataImageBundle ap, int iconFixedWidth, 
+			Double textOffsetX, Double textOffsetY)	
+	{ return factory(ap, false, iconFixedWidth, textOffsetX, textOffsetY); }
 
 	public StretchyClickyDataJLabel() { addMouseListener(mmm); this.hover = new MouseHoverData(); }
 
@@ -125,7 +151,7 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 		this.imageDataBundle = bundle;
 		setIcon();
 	}
-	
+
 	public void updateBundle(ArrayDataImageBundle bundle, StretchyClickyIcon icon)
 	{
 		this.imageDataBundle = bundle;
@@ -244,11 +270,23 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 	{
 		if (addText)
 		{
+			int pixWidth = icon.getDataPixelWidth();
+			int pixHeight = icon.getDataPixelHeight();
+
 			if (verbose) System.out.println("StretchyClickyDataJLabel: drawing text");
+
 			g.setColor(this.textColor);	
 			g.setFont(this.font);
-			int pixAdjX = icon.getDataPixelWidth() / 2;
-			int pixAdjY = icon.getDataPixelHeight() / 2;
+
+
+			int pixAdjX, pixAdjY;
+
+			pixAdjX = pixWidth / 2;
+			pixAdjY = pixHeight / 2;
+
+			if (textOffsetX != null) pixAdjX += (int)(textOffsetX * ((double) pixWidth));
+			if (textOffsetY != null) pixAdjY += (int)(textOffsetY * ((double) pixHeight));
+
 
 			if (verbose) System.out.println("StretchyClickyDataJLabel: pixel adjust x: " + pixAdjX + ", pix adjust y: " + pixAdjY);
 
@@ -299,17 +337,17 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 		drawPoints(g);
 		drawText(g);
 	}
-	
+
 	public void setMatchIcon(StretchyClickyIcon i) { this.icon.setMatchIcon(i); }
 
 	public void setVerbose(boolean b) { this.verbose = b; }
 	private void setIcon(StretchyClickyIcon icon) { this.icon = icon; super.setIcon(icon);}
 	public Graphics getIconGraphics() { return icon.getImage().getGraphics(); }
-	
-	
+
+
 	public static void main(String[] args) {
 		demo_legend();
-				demo_draw_points_on_icon();
+		demo_draw_points_on_icon();
 		//		demo_update_bundle();
 	}
 
@@ -359,18 +397,18 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 		c.weightx = 0;
 
 		c.gridx = 1;
-		
-		
-		
-		
+
+
+
+
 		frame.add(Box.createHorizontalGlue(), c);
 		frame.add(Box.createHorizontalStrut(legendWidth), c);
 		frame.add(legend, c);
-		
+
 		frame.setVisible(true);
-		
-		
-		
+
+
+
 	}
 
 	public static void demo_update_bundle()
@@ -474,11 +512,11 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 			String valMessage = imageDataBundle.getName() + " = " + hover.value;
 			System.out.println(dataArrayCoordMessage + valMessage);
 		}
-//		System.out.println(dataArrayCoordMessage + valMessage);
+		//		System.out.println(dataArrayCoordMessage + valMessage);
 	}
 
 	public void setHoverPane(JTextPane pane) { hover.pane = pane; }
-	
+
 	class MouseHoverData
 	{
 		JTextPane pane;
@@ -489,14 +527,14 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 		{
 			mouseCoord = StretchyClickyDataJLabel.this.icon.getDataMouseCoords(arg0);
 			value = StretchyClickyDataJLabel.this.imageDataBundle.getDataArrayVal(mouseCoord);
-			
+
 			if (pane != null)
 			{
 				String dataArrayCoordMessage = 
 						String.format("(x = %d, y = %d): ", mouseCoord[0], mouseCoord[1] );
 				String valMessage = imageDataBundle.getName() + " = " + hover.value;
 				pane.setText(dataArrayCoordMessage + System.lineSeparator() + valMessage);
-//				System.out.println(dataArrayCoordMessage + System.lineSeparator() + valMessage);
+				//				System.out.println(dataArrayCoordMessage + System.lineSeparator() + valMessage);
 			}
 		}
 	}
