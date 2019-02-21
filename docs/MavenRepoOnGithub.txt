@@ -1,0 +1,10 @@
+https://github.com/michaelfrancenelson/Mike_Utils.git
+
+git clone https://github.com/michaelfrancenelson/Mike_Utils.git my-repository
+cd my-repository
+git checkout repository
+rm -R *
+mvn install:install-file -DgroupId=michaelfrancenelson -DartifactId=Mike_Utils -Dversion=1.0.01 -Dfile=C:/github/MikeUtilsJava2/target/mvn-repo/MikeUtilsJava2/MikeUtilsJava2/1.0.0/MikeUtilsJava2-1.0.0.jar -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=.  -DcreateChecksum=true
+git add -A . && git commit -m "released version X.Y.Z"
+
+git push origin repository

@@ -27,7 +27,7 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 	protected ArrayDataImageBundle bundle;
 	protected GridBagLayout layout;
 	protected GridBagConstraints c;
-	protected int legendWidth = 150;
+	protected int legendWidth;
 
 	protected int nLegendTicks = 5;
 	
@@ -47,15 +47,24 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 		legendLabel.setHoverPane(pane);
 	}
 	
-	
 	public static StretchyClickyMapAndLegendPanel factory(
 			ArrayDataImageBundle bundle, boolean left, Font font, Color fontColor)
+	{ return factory(bundle, left, font, fontColor, 300, 5, 100, 0.02); }
+	
+	public static StretchyClickyMapAndLegendPanel factory(
+			ArrayDataImageBundle bundle, boolean left, Font font, Color fontColor,
+			int nLegendSteps, int nLegendTicks, int legendWidth, double legendTicksBuffer )
 	{
 		StretchyClickyMapAndLegendPanel s = new StretchyClickyMapAndLegendPanel();
 		s.left = left;
 		s.legendFont = font;
 		s.legendFontColor = fontColor;
 		s.bundle = bundle;
+		s.nLegendSteps = nLegendSteps;
+		s.nLegendTicks = nLegendTicks;
+		s.legendWidth = legendWidth;
+		s.legendTicksBuffer = legendTicksBuffer;
+		
 		s.buildMaps();
 		s.buildLayout();
 		return s;		
