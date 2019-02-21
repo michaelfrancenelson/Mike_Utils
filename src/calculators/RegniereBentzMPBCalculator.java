@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 /**The set of equations needed to run the Mountain Pine Beetle winter survival model from:<br><br>
  * 
- *    Régnière, Jacques, and Barbara Bentz.<br>
+ *    Regniere, Jacques, and Barbara Bentz.<br>
  *    “Modeling Cold Tolerance in the Mountain Pine Beetle, Dendroctonus Ponderosae.”<br> 
  *    Journal of Insect Physiology 53, no. 6 (June 2007): 559–72. <br>
  *    https://doi.org/10.1016/j.jinsphys.2007.02.007. 
