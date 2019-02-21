@@ -29,7 +29,7 @@ public class Piecewise {
 	{
 		if (x < xPts[0] || x > xPts[xPts.length - 1]) throw new IllegalArgumentException("Requested point is outside the range of the piecewise function.");
 		/* Determine which subinterval the point lies on: */
-		int index = Binary.indexOfLessThanKey(xPts, x) - 1;
+		int index = Binary.indexOfLessThanKey(xPts, x);
 		return linearInterpolation(x, xPts[index], xPts[index + 1], yPts[index], yPts[index + 1]);
 	}
 	

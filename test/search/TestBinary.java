@@ -9,11 +9,13 @@ import java.util.function.BiFunction;
 import org.junit.Before;
 import org.junit.Test;
 
-import junit4.Equality;
 import search.Binary.IndicesAndRelativePosition;
 
 public class TestBinary {
 
+	static final double TOL = 0.0000001;
+
+	
 	int nDuplicates;
 	int nLevels;
 	double key1;
@@ -32,7 +34,7 @@ public class TestBinary {
 	int[] repeatedEndpoints1b;
 	int[] repeatedCounts1b;
 	int repeatedCountsEndpoints;
-	
+
 	IndicesAndRelativePosition expectedIRP = null, observedIRP = null;
 
 	BiFunction<double[], Double, Integer> 
@@ -170,13 +172,13 @@ public class TestBinary {
 				}
 				if (key == array[start])
 				{
-					failSearch(key, array, fLessThanKey);
+					//					failSearch(key, array, fLessThanKey);
 
 					testIndex(key, highestRepeatedIndex + 1, array, fGreaterThanKey);
 					testIndex(key - tol, start, array, fGreaterThanKey);
 
-					failSearch(key - tol, array, fEqualLessThanKey);
-					failSearch(key - tol, array, fEqualGreaterThanKey);
+					//					failSearch(key - tol, array, fEqualLessThanKey);
+					//					failSearch(key - tol, array, fEqualGreaterThanKey);
 
 					testIndex(key, start, array, fEqualLessThanKey);
 				}
@@ -202,11 +204,9 @@ public class TestBinary {
 				/* Greater than or equal should return highest index of matching duplicates. */
 				testIndex(key, highestRepeatedIndex, duplicatedArray, fEqualGreaterThanKey);
 
-				/* Strictly less should throw an exception if key equal to first element. */
+				/* Strictly less should return index 0 */
 				if (key <= duplicatedArray[0]) 
-					failSearch(key, duplicatedArray, fLessThanKey);
-				/* Otherwise, strictly less should return one less than the lowest repeated element's index */
-				else testIndex(key, lowestRepeatedIndex - 1, duplicatedArray, fLessThanKey);
+					testIndex(key, 0, duplicatedArray, fLessThanKey);
 
 				/* Strictly greater should throw an exception if key equal to highest element. */
 				if (key >= duplicatedArray[duplicatedArray.length - 1])
@@ -277,7 +277,7 @@ public class TestBinary {
 						observed = Binary.indicesOfInterval(array, key);
 
 						/* In case the key matches an element: */
-						Equality.assertEqualsArray(expected, observed);
+						assertEqualsArray(expected, observed);
 					}
 				}
 			}
@@ -290,12 +290,12 @@ public class TestBinary {
 		double low = -1.0;
 		double high = 1.0;
 		double range = high - low;
-		
+
 		key = -1.0;
-		
+
 		int nIntervals = 1234;
 		interval = range / nIntervals;
-		
+
 		int test = 0;
 		while (key <= 1.0)
 		{
@@ -304,7 +304,7 @@ public class TestBinary {
 			test++;
 		}
 	}
-	
+
 	@Test
 	public void testIndicesAndRelativePosition()
 	{
@@ -331,7 +331,7 @@ public class TestBinary {
 					if (key <= array[end])
 					{
 						idx = Binary.indexOfLessThanOrEqualToKey(array, key);
-						
+
 						/* Equal to an endpoint: */
 						if (key == array[0]) {expIdx1 = expIdx2 = 0; expRel = 1.0; }
 						else if (key == array[end])	{expIdx1 = expIdx2 = end; expRel = 1.0; }
@@ -341,21 +341,29 @@ public class TestBinary {
 
 						/* If the key is equal to a duplicated element, return only the lowest duplicated element's index. */
 						else if (array[idx] == key & highestRepeatedIndex != lowestRepeatedIndex) {expIdx1 = expIdx2 = lowestRepeatedIndex; expRel = 1.0; }
-							
+
 						else {expIdx1 = idx; expIdx2 = idx + 1; expRel = Binary.relativePosition(array[idx],  array[idx + 1], key); }
 
 						setIRPs(expIdx1, expIdx2, expRel, array, key);
 						assertEquals(observedIRP, expectedIRP);
 					}
-					
+
 				}
 			}
 		}
 	}
-	
+
 	private void setIRPs(int expIdx1, int expIdx2, double expRel, double[] array, double key)
 	{
 		expectedIRP = new IndicesAndRelativePosition(expIdx1, expIdx2, expRel);
 		observedIRP = Binary.interpolateRelativePosition(array, key);
 	}
+
+	/** Convenience method for checking that each element of the arrays are equal.*/
+	public static void assertEqualsArray(int[] array1, int[] array2) {
+		for (int i = 0; i < array1.length; i++) assertEquals(array1[i], array2[i]); }
+	/** Convenience method for checking that each element of the arrays are equal.*/
+	public static void assertEqualsArray(double[] array1, double[] array2) { 
+		for (int i = 0; i < array1.length; i++) assertEquals(array1[i], array2[i], TOL);  }
+
 }

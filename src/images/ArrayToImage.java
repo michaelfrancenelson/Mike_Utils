@@ -89,7 +89,7 @@ public class ArrayToImage {
 
 	public static ImagePackage gradientImageVertical(double min, double max, int height, int width, ColorInterpolator ci)
 	{
-		double[] gradient = Sequences.doubleSequence(min, max, height);
+		double[] gradient = Sequences.spacedIntervals(min, max, height);
 		double[][] imgArray = new double[height][width];
 		for (int i = 0; i < gradient.length; i++) for (int j = 0; j < width; j++)
 				imgArray[i][j] = gradient[i];

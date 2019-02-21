@@ -3,19 +3,11 @@ package sampling;
 import search.Binary;
 import umontreal.ssj.randvar.UniformGen;
 import umontreal.ssj.randvar.UniformIntGen;
-import umontreal.ssj.rng.MRG31k3p;
 import umontreal.ssj.rng.RandomStream;
 
 /** Randomly choose elements from collections with possibly different probabilities associated with each item in the collection. */
 public class WeightedRandomSample {
 	
-	public static void _main(String[] args) {
-		RandomStream rs = new MRG31k3p();
-		 
-		for (int i = 0; i < 100; i++)
-		System.out.println(UniformIntGen.nextInt(rs, 0, 5));
-	}
-
 	/** Choose an index from an array with the provided probability weights.
 	 *  <br> Weights do not need to sum to 1.
 	 * 
@@ -35,12 +27,10 @@ public class WeightedRandomSample {
 		/* In case there is zero weight, choose an index uniformly. */
 		if (sum <= 0)
 		{
-			System.out.println("WeightedRandomSample:  zero weight, choosing random element");
 			return UniformIntGen.nextInt(rs, 0, weights.length - 1);
 		}
 		double key = UniformGen.nextDouble(rs, 0.0, sum);
 		int index = Binary.insertionIndex(cumulativeWeights, key);
-		System.out.println("WeightedRandomSample:  total weight = " + sum + ", random key = " + key + ", index = " + index);
 
 		return index;
 	}
@@ -80,13 +70,10 @@ public class WeightedRandomSample {
 		/* In case there is zero weight, choose an index uniformly. */
 		if (sum <= 0) 
 			{
-			System.out.println("WeightedRandomSample:  zero weight, choosing random element");
 			return UniformIntGen.nextInt(rs, 0, weights.length - 1);
 			}
 		double key = UniformGen.nextDouble(rs, 0, sum);
 		int index = Binary.insertionIndex(cumulativeWeights, key);
-		
-		System.out.println("WeightedRandomSample:  total weight = " + sum + ", random key = " + key + ", index = " + index);
 		
 		return index;
 	}

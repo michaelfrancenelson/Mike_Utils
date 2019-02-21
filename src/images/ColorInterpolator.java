@@ -26,22 +26,17 @@ public class ColorInterpolator
 	public ColorInterpolator(Color[] colors, int min, int max, int naInt, Color naColor)
 	{
 		if (min > max) throw new IllegalArgumentException("max must be greater than or equal to min.");
-		this.colors = colors;
-		this.naInt = naInt;
-		this.naColor = naColor;
-		this.breaks = Sequences.doubleSequence((double) min, (double) max, colors.length);
+		this.colors = colors; this.naInt = naInt; this.naColor = naColor;
+		this.breaks = Sequences.spacedIntervals((double) min, (double) max, colors.length - 2);
+//		this.breaks = Sequences.spacedIntervals((double) min, (double) max, colors.length); //TODO
 	}
 	
 	public ColorInterpolator(Color[] colors, double min, double max, double naDouble, Color naColor)
 	{
 		if (min > max) throw new IllegalArgumentException("max must be greater than or equal to min.");
-
-		this.breaks = Sequences.doubleSequence((double) min, (double) max, colors.length);
-
-		this.colors = colors;
-		this.naDouble = naDouble;
-		this.naColor = naColor;
-
+		this.colors = colors; this.naDouble = naDouble; this.naColor = naColor;
+//		this.breaks = Sequences.spacedIntervals((double) min, (double) max, colors.length); //TODO
+		this.breaks = Sequences.spacedIntervals((double) min, (double) max, colors.length - 1); 
 	}
 
 	public int getColor(int val) 

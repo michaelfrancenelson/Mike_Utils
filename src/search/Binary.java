@@ -8,6 +8,7 @@ public class Binary {
 
 	static double[] keys;
 	static double key;
+	
 	public static void main(String[] args) {
 
 		keys = new double[] {-1.1, -1.0, -0.1, 0.0, 0.1, 1.0, 2.001};
@@ -43,22 +44,22 @@ public class Binary {
 	private static void printSearch(double key) { System.out.println("Key = " + key + " binary index = " + Arrays.binarySearch(keys, key)); }
 	private static void printInsertion(double key) { System.out.println("Key = " + key + " insert index = " + insertionIndex(keys, key)); }
 	
-	
 	/** 
-	 * @param array1a array1a of doubles, sorted ascending
-	 * @param key Must be greater than the smallest element in array1a. <br>
-	 *            In case the key matches a repeated value, the highest index of the next lowest value in array1a is returned.
+	 * @param array array of doubles, sorted ascending
+	 * @param key Must be greater than the smallest element in array. <br>
+	 *            In case the key matches a repeated value, the highest index of the next lowest value in array is returned.
 	 * @return The index of the greatest element that is strictly less than the key.  <br>
 	 *         In case of key adjacent to repeated elements, the greatest element is returned.
 	 */
 	public static int indexOfLessThanKey(double[] array, double key)
 	{
 		int start = 0; int end = array.length - 1;
-		if (key <= array[start]) 
-			throw new IllegalArgumentException(String.format(
-				"key %.5f must be greater than first element %.5f.", key, array[start]));
+		if (key <= array[start])
+			return start;
+//			throw new IllegalArgumentException(String.format(
+//				"key %.5f must be greater than first element %.5f.", key, array[start]));
 
-		/* If the key is greater than the largest element, return the last1a index. */
+		/* If the key is greater than the largest element, return the last index. */
 		if (key > array[end]) return end;
 
 		int mid = (start + end) / 2;
@@ -76,8 +77,8 @@ public class Binary {
 	}
 
 	/** 
-	 * @param array1a an array1a of doubles, in ascending order.  	 
-	 * @param key Must fall within the range of values in the array1a, endpoints included.  <br>
+	 * @param array an array of doubles, in ascending order.  	 
+	 * @param key Must fall within the range of values in the array, endpoints included.  <br>
 	 *        In case of repeated values matching the key, the lowest index is returned.
 	 * @return Return the highest index of the greatest element that is less than or equal to the key. <br>
 	 *         In case of repeated candidate elements, the highest index is returned.
@@ -85,7 +86,7 @@ public class Binary {
 	public static int indexOfLessThanOrEqualToKey(double[] array, double key)
 	{
 		if (key < array[0]) throw new IllegalArgumentException("key must be greater than or equal to the first element.");
-		if (key > array[array.length - 1]) throw new IllegalArgumentException("key must be less than or equal to the last1a element.");;
+		if (key > array[array.length - 1]) throw new IllegalArgumentException("key must be less than or equal to the last element.");;
 		if (key == array[0]) return 0;
 		
 		/* Cheating: get the less than result and add one in case of equality. */
@@ -95,8 +96,8 @@ public class Binary {
 	}
 	
 	/**  
-	 * @param array1a array1a of doubles, sorted ascending
-	 * @param key must be strictly less than the greatest element in array1a,
+	 * @param array array of doubles, sorted ascending
+	 * @param key must be strictly less than the greatest element in array,
 	 *            In case of repeated elements matching the key, the lowest index of the element with a higher value is returned.
 	 * @return index of the first element that is greater than the key. <br>
 	 *         In case of repeated values, the lowest index of the repeated values is returned.
@@ -105,7 +106,7 @@ public class Binary {
 	{
 		int start = 0; int end = array.length - 1;
 		if (key < array[0]) return 0;
-		if (key >= array[end]) throw new IllegalArgumentException("key must be less than the last1a element.");;
+		if (key >= array[end]) throw new IllegalArgumentException("key must be less than the last element.");;
 
 		int mid = (start + end) / 2;
 		while (start <= end) {
@@ -123,8 +124,8 @@ public class Binary {
 	}
 
 	/** Return the 
-	 * @param array1a sorted, ascending array1a of doubles.
-	 * @param key Must fall within the range of values in the array1a, endpoints included.  <br>
+	 * @param array sorted, ascending array of doubles.
+	 * @param key Must fall within the range of values in the array, endpoints included.  <br>
 	 *        In case of repeated values matching the key, the highest index is returned.
 	 * 
 	 * @return index of the first element that is greater than or equal to the key. <br>
@@ -135,7 +136,7 @@ public class Binary {
 		int start = 0;
 		int end = array.length - 1;
 		if (key < array[start]) throw new IllegalArgumentException("key must be greater than or equal to the first element.");
-		if (key > array[end]) throw new IllegalArgumentException("key must be less than or equal to the last1a element.");;
+		if (key > array[end]) throw new IllegalArgumentException("key must be less than or equal to the last element.");;
 
 		if (key == array[end]) return end;
 //		if (key == array[start]) return start;
@@ -163,12 +164,12 @@ public class Binary {
 	}
 
 	/**
-	 * @param array1a an array1a of doubles, in ascending order.
-	 * @param key double value must be within range of values in array1a, endpoints included.
-	 * @return indices of the array1a elements immediately greater than and less than the key. <br>
-	 *         In case the input array1a is a single element and the key matches, return <b> (0, 0) </b> <br> 
-	 *         In case the key matches a value in array1a, matching array1a element becomes lower index in returned array1a. <br>
-	 *         In case the key matches the highest value, the returned indices are both <b>array1a.length - 1</b>
+	 * @param array an array of doubles, in ascending order.
+	 * @param key double value must be within range of values in array, endpoints included.
+	 * @return indices of the array elements immediately greater than and less than the key. <br>
+	 *         In case the input array is a single element and the key matches, return <b> (0, 0) </b> <br> 
+	 *         In case the key matches a value in array, matching array element becomes lower index in returned array. <br>
+	 *         In case the key matches the highest value, the returned indices are both <b>array.length - 1</b>
 	 */
 	public static int[] indicesOfIntervalExtended(double[] array, double key)
 	{
@@ -188,12 +189,12 @@ public class Binary {
 	}
 	
 	/**
-	 * @param array1a an array1a of doubles, in ascending order.
-	 * @param key double value must be within range of values in array1a, endpoints included.
-	 * @return indices of the array1a elements immediately greater than and less than the key. <br>
-	 *         In case the input array1a is a single element and the key matches, return <b> (0, 0) </b> <br> 
-	 *         In case the key matches a value in array1a, matching array1a element becomes lower index in returned array1a. <br>
-	 *         In case the key matches the highest value, the returned indices are both <b>array1a.length - 1</b>
+	 * @param array an array of doubles, in ascending order.
+	 * @param key double value must be within range of values in array, endpoints included.
+	 * @return indices of the array elements immediately greater than and less than the key. <br>
+	 *         In case the input array is a single element and the key matches, return <b> (0, 0) </b> <br> 
+	 *         In case the key matches a value in array, matching array element becomes lower index in returned array. <br>
+	 *         In case the key matches the highest value, the returned indices are both <b>array.length - 1</b>
 	 */
 	public static int[] indicesOfInterval(double[] array, double key)
 	{
@@ -215,21 +216,25 @@ public class Binary {
 	}
 
 
-	
+	 /** 
+	 * @param low  lower limit of the test interval
+	 * @param high upper limit of the test interval
+	 * @param key value to test
+	 * @return proportional position of the key between the low and high values.
+	 */
 	public static double relativePosition(double low, double high, double key)
 	{
-		
+//		if (key < low || key > high) throw new IllegalArgumentException(
+//				String.format("Key %.2f is outside the range of the interval (%.2f, %.2f)", key, low, high));
 		double range = high - low;
 		if (range == 0) return 1.0;
 		return (key - low) / range;
-		
 	}
-	
 	
 	public static IndicesAndRelativePosition interpolateRelativePosition(double[] array, double key)
 	{
-//		int[] indices = indicesOfInterval(array, key); //TODO
 		int[] indices = indicesOfIntervalExtended(array, key);
+
 		/* endpoint/key equal to element/single element array array special cases: */
 		if (indices[0] == indices[1]) return new IndicesAndRelativePosition(indices, 1.0);
 		return new IndicesAndRelativePosition(indices, relativePosition(array[indices[0]], array[indices[1]], key));
@@ -258,43 +263,5 @@ public class Binary {
 			
 			return false;
 		}
-		
 	}
-
-	
-	
-	
-	//	public static void main(String[] args){
-
-	//		testGreaterEqual();
-
-	//		testLessThan();
-	//		testGreaterThan();
-	//		
-	//		double[] array1a;
-	//
-	//		array1a = new double[] {-1.0, 0.0, 0.0, 0.01, 1.5, 2.5};
-	//		array1a = new double[] {-1.0, 0.0, 0.0, 0.01, 1.5, 2.5};
-	//		int idx = 0;
-	//
-	//		double i = -1.5;
-	//		double val = -9999;
-	//		//		for (int i = 0; i < 61; i++)
-	//		while (i < 3.5)
-	//		{
-	//			idx = -1; val = -9999;
-	//			double key = i;
-	//			idx = indexOfLessThanKey(array1a, key); 
-	//			val = array1a[idx]; 
-	//			System.out.println("(less than key) key = " + String.format("%4.1f", key) + " index = " + idx + " a[i] " + String.format("%1.2f", val));
-	//			i += 0.5;
-	//		}
-
-	//		for (int i = 0; i < 56; i++)
-	//		{
-	//			double key = -1.0 + (double)i / 10;
-	//			System.out.println("key = " + String.format("%1.1f", key) + " interval index = " +
-	//			indexOfInterval(array1a, key));
-	//		}
-	//	}
 }

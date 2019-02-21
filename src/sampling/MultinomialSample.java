@@ -152,5 +152,5 @@ public class MultinomialSample {
 	}
 
 	private static void print(int[] ints) { for (int i : ints) System.out.println(i); }
-	private static void printSum(int[] ints) { System.out.println("sum = " + Sequences.seqSum(ints)); }
+	private static void printSum(int[] ints) { System.out.println("sum = " + Sequences.sum(ints)); }
 }

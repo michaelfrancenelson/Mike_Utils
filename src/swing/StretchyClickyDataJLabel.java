@@ -343,7 +343,7 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 		legend.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
 		legend.setMaximumSize(new Dimension(legendWidth, Integer.MAX_VALUE));
 
-		ticksRows = Sequences.intSequence(0, legend.icon.getImageDataNRows() - 1, nTicks);
+		ticksRows = Sequences.spacedIntervals(0, legend.icon.getImageDataNRows() - 1, nTicks);
 		legend.drawTextValuesOnIcon(ticksRows, 0, Color.black, new Font("serif", 2, 60));
 
 		legend.addMouseMotionListener(legend);

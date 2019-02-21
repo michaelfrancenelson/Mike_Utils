@@ -14,10 +14,10 @@ public class TestPiecewise {
 	@Test
 	public void TestLinearInterpolation_and_Slope()
 	{
-		double x1 = 0;
-		double x2 = 2;
-		double y1 = 0;
-		double y2 = 3;
+		double x1 = 0.0;
+		double x2 = 2.0;
+		double y1 = 0.0;
+		double y2 = 3.0;
 		double x = 0.5;
 
 		double slope = Piecewise.slope(x1, x2, y1, y2);
@@ -33,8 +33,8 @@ public class TestPiecewise {
 	@Test
 	public void testPiecewiseLinearInterpolation()
 	{
-		double[] xPts = new double[] {0d, 1d, 2d, 3d};
-		double[] yPts = new double[] {0d, 1d, 3d, 6d};
+		double[] xPts = new double[] {0.0, 1.0, 2.0, 3.0};
+		double[] yPts = new double[] {0.0, 1.0, 3.0, 6.0};
 		double x = 0.5;
 		
 		double expected = 0.5;

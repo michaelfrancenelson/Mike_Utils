@@ -9,7 +9,7 @@ public class TestPiecewiseFunction {
 	double[] piecewiseX;
 	double[] piecewiseY;
 	
-	PiecewiseFunction func;
+	PiecewiseLinearFunction func;
 	
 	@Test
 	public void test() {
@@ -18,7 +18,7 @@ public class TestPiecewiseFunction {
 		piecewiseX = new double[] {0d, 0.5, 0.75, 1d};
 		piecewiseY = new double[] {0d, 0.5, 0.6, 1d};
 		
-		func = new PiecewiseFunction(piecewiseX, piecewiseY);
+		func = new PiecewiseLinearFunction(piecewiseX, piecewiseY);
 		
 		/* Check the vertices: */
 		for(int i = 0; i < piecewiseX.length; i++)

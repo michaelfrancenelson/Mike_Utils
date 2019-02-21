@@ -78,7 +78,7 @@ public class StretchyClickyMapAndLegendPanel extends JPanel
 	public void setLegendLabels()
 	{
 		int nTicks = nLegendTicks;
-		int[] ticksRows = Sequences.intSequence(
+		int[] ticksRows = Sequences.spacedIntervals(
 				0, 
 				((StretchyClickyIcon)legendLabel.getIcon()).getImageDataNRows() - 1, 
 				nTicks);

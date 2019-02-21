@@ -99,8 +99,8 @@ public class TestVectorTools {
 	{
 		double tol = 0.00000001;
 		
-		int[] values1 = Sequences.intSequence(-10, 10);
-		int[] values2 = Sequences.intSequence(-11, 9);
+		int[] values1 = Sequences.sequence(-10, 10);
+		int[] values2 = Sequences.sequence(-11, 9);
 		
 		double[] val3 = new double[] {-1, 0, 2.2, 3};
 		double[] val4 = new double[] {-1, -1, 2, 3.2};

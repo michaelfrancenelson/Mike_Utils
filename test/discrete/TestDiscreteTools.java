@@ -46,9 +46,9 @@ public class TestDiscreteTools {
 		for(int i = 0; i < tests; i++)
 		{
 			pair = DiscreteTools.binomialPair(n, p, re);
-			System.out.println();
-			for(int j : pair) System.out.print(j + " ");
-			assertEquals(Sequences.seqSum(pair), n);
+//			System.out.println();
+//			for(int j : pair) System.out.print(j + " ");
+			assertEquals(Sequences.sum(pair), n);
 			assertEquals(pair[0], (int)(p * (double)n), 0.025 * n);
 		}
 	}

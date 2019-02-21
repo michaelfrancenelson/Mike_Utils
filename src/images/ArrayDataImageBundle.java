@@ -130,11 +130,11 @@ public class ArrayDataImageBundle
 				nSteps = Math.min(
 						(int)bundle.getMaxValue() - (int)bundle.getMinValue() + 1, 
 						nSteps);
-				int[] datInt = Sequences.intSequence(min, max, nSteps);
+				int[] datInt = Sequences.spacedIntervals(min, max, nSteps);
 				return getBundle(datInt, bundle.dataName, bundle.ci, bundle.na_double, bundle.na_int, bundle.na_color);
 			}
 
-			double[] data = Sequences.doubleIntervals(
+			double[] data = Sequences.spacedIntervals(
 					bundle.getMinValue(), bundle.getMaxValue(), nSteps);
 			return getBundle(data, bundle.dataName, bundle.ci, bundle.na_double, bundle.na_int, bundle.na_color);
 		}
@@ -330,11 +330,11 @@ public class ArrayDataImageBundle
 			nSteps = Math.min(
 					(int)bundle.getMaxValue() - (int)bundle.getMinValue() + 1, 
 					nSteps);
-			int[] datInt = Sequences.intSequence(min, max, nSteps);
+			int[] datInt = Sequences.spacedIntervals(min, max, nSteps);
 			return new ArrayDataImageBundle(datInt, bundle.ci, bundle.dataName);
 		}
 
-		double[] data = Sequences.doubleIntervals(
+		double[] data = Sequences.spacedIntervals(
 				bundle.getMinValue(), bundle.getMaxValue(), nSteps);
 		return new ArrayDataImageBundle(data, bundle.ci, bundle.dataName);
 	}

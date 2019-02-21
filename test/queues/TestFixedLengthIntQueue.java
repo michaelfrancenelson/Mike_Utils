@@ -43,7 +43,7 @@ public class TestFixedLengthIntQueue {
 		{
 			testQueue[i] = i;
 			queue.dequeue(); queue.enqueue(i);
-			printQueue();
+//			printQueue();
 		}
 		
 //		printQueue();
@@ -83,5 +83,5 @@ public class TestFixedLengthIntQueue {
 		
 	}
 
-	private void printQueue() { System.out.println(queue.toString());	}
+//	private void printQueue() { System.out.println(queue.toString());	}
 }

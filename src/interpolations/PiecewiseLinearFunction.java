@@ -3,18 +3,20 @@ package interpolations;
 import search.Binary;
 
 //TODO probably broken
-public class PiecewiseFunction
+public class PiecewiseLinearFunction
 {
 	double[] piecewiseX;
 	double[] piecewiseY;
 	double[] slopes;
 	
-	public PiecewiseFunction(double[] piecewiseX, double[] piecewiseY)
+	public PiecewiseLinearFunction(double[] piecewiseX, double[] piecewiseY)
 	{
 		this.piecewiseX = piecewiseX;
 		this.piecewiseY = piecewiseY;
-		slopes = new double[piecewiseX.length - 1];
+		slopes = new double[piecewiseX.length];
 		for (int i = 0; i < piecewiseX.length - 1; i++)
+//			slopes = new double[piecewiseX.length - 1];
+//		for (int i = 0; i < piecewiseX.length - 1; i++)
 		{
 			slopes[i] = Piecewise.slope(piecewiseX[i], piecewiseX[i + 1], piecewiseY[i], piecewiseY[i + 1]);
 		}
