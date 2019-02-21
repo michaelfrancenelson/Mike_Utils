@@ -13,9 +13,18 @@ git push origin --delete repository
 
 git branch repository
 git checkout repository
+
 rm -R *
 
-mvn install:install-file -DgroupId=MikeUtilsJava2 -DartifactId=Mike_Utils -Dversion=1.0.01 -Dfile=C:/github/MikeUtilsJava2/target/mvn-repo/MikeUtilsJava2/MikeUtilsJava2/1.0.01/MikeUtilsJava2-1.0.01.jar -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=.  -DcreateChecksum=true
+ver=1.0.02
+group=michaelfrancenelson
+repfile=C:/github/MikeUtilsJava2/target/mvn-repo/$group/MikeUtilsJava2/$ver/MikeUtilsJava2-$ver.jar
+repfile=C:/github/MikeUtilsJava2/target/mvn-repo/michaelfrancenelson/MikeUtilsJava2/1.0.02/MikeUtilsJava2-1.0.02.jar
+
+mvn install:install-file -DgroupId=group -DartifactId=Mike_Utils -Dversion=$ver -Dfile=$repfile -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=. -DcreateChecksum=true
+
+
+mvn install:install-file -DgroupId=michaelfrancenelson -DartifactId=Mike_Utils -Dversion=1.0.02 -Dfile=C:/github/MikeUtilsJava2/target/mvn-repo/michaelfrancenelson/MikeUtilsJava2/1.0.02/MikeUtilsJava2-1.0.02.jar -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=.  -DcreateChecksum=true
 
 git add -A . && git commit -m "released version 1.0.01"
 

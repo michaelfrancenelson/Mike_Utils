@@ -3,11 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>michaelfrancenelson</groupId>
-	<artifactId>MikeUtilsJava2</artifactId>
+	<artifactId>Mike_Utils</artifactId>
 	<!-- <version>0.0.1-SNAPSHOT</version> -->
 	<version>1.0.02</version>
-
-<!-- mvn install:install-file -DgroupId=michaelfrancenelson -DartifactId=Mike_Utils -Dversion=1.0.01 -Dfile=C:/github/MikeUtilsJava2/target/mvn-repo/MikeUtilsJava2/MikeUtilsJava2/1.0.0/MikeUtilsJava2-1.0.0.jar -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=.  -DcreateChecksum=true -->
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
