@@ -34,7 +34,8 @@ public class ArrayDataImageBundle
 	private String dataType;
 
 	public ArrayDataImageBundle() {}
-	public void makeBoolean() { this.isBoolean = true; }
+	public void setBoolean(boolean b) { this.isBoolean = b; }
+	public boolean getBoolean() { return this.isBoolean; }
 
 	public static class ArrayDataImageFactory
 	{
@@ -65,17 +66,17 @@ public class ArrayDataImageBundle
 		public static ArrayDataImageBundle getBundle(
 				int[][] data, 
 				String name, Color[] colors, 
-				double naDouble, int naInt, Color naColor)
+				double naDouble, int naInt, Color naColor, boolean isBoolean)
 		{
 			int[] minMax = Sequences.minMax(data, naInt);
 			ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], naDouble, naColor);
-			return getBundle(data, name, ci, naDouble, naInt, naColor);
+			return getBundle(data, name, ci, naDouble, naInt, naColor, isBoolean);
 		}
 
 		public static ArrayDataImageBundle getBundle(
 				int[][] data, 
 				String name, ColorInterpolator ci,
-				double naDouble, int naInt, Color naColor)
+				double naDouble, int naInt, Color naColor, boolean isBoolean)
 		{
 			ArrayDataImageBundle out = new ArrayDataImageBundle();
 			out.dataName = name;
@@ -84,18 +85,24 @@ public class ArrayDataImageBundle
 			out.na_color = naColor;
 			out.setCi(ci);	
 			out.setInt(data);
+			out.setBoolean(isBoolean);
 			return out;
 		}
 
-		/** Get an image bundle for 1D int data. */
+//		/** Get an image bundle for 1D int data. */
+//		public static ArrayDataImageBundle getBundle(
+//				int[] data, 
+//				String name, ColorInterpolator ci, 
+//				double naDouble, int naInt, Color naColor)
+		
 		public static ArrayDataImageBundle getBundle(
 				int[] data, 
 				String name, ColorInterpolator ci, 
-				double naDouble, int naInt, Color naColor)
+				double naDouble, int naInt, Color naColor, boolean isBoolean)
 		{
 			int[][] out = new int[1][data.length];
 			for (int y = 0; y < out[0].length; y++) { out[0][y] = data[y]; }
-			return getBundle(out, name, ci, naDouble, naInt, naColor);
+			return getBundle(out, name, ci, naDouble, naInt, naColor, isBoolean);
 		}
 
 		/** Get an image bundle for 1D double data. */
@@ -113,7 +120,7 @@ public class ArrayDataImageBundle
 		public static ArrayDataImageBundle getBundle(
 				int[][] data, 
 				String name, Color[] colors) 
-		{ return getBundle(data, name, colors, Double.MIN_VALUE, Integer.MIN_VALUE, Color.gray); }
+		{ return getBundle(data, name, colors, Double.MIN_VALUE, Integer.MIN_VALUE, Color.gray, false); }
 
 		/** Get image bundle with default na values. */
 		public static ArrayDataImageBundle getBundle(
@@ -134,12 +141,14 @@ public class ArrayDataImageBundle
 						(int)bundle.getMaxValue() - (int)bundle.getMinValue() + 1, 
 						nSteps);
 				int[] datInt = Sequences.spacedIntervals(min, max, nSteps);
-				return getBundle(datInt, bundle.dataName, bundle.ci, bundle.na_double, bundle.na_int, bundle.na_color);
+				return getBundle(datInt, bundle.dataName, bundle.ci, bundle.na_double, bundle.na_int, bundle.na_color, bundle.isBoolean);
 			}
 
 			double[] data = Sequences.spacedIntervals(
 					bundle.getMinValue(), bundle.getMaxValue(), nSteps);
-			return getBundle(data, bundle.dataName, bundle.ci, bundle.na_double, bundle.na_int, bundle.na_color);
+			ArrayDataImageBundle b = getBundle(data, bundle.dataName, bundle.ci, bundle.na_double, bundle.na_int, bundle.na_color);
+			b.setBoolean(bundle.isBoolean);
+			return b;
 		}
 
 		public static ArrayDataImageBundle getRandomBundle(int nRows, int nCols)
@@ -160,9 +169,6 @@ public class ArrayDataImageBundle
 		}
 	}
 
-
-
-
 	/**
 	 * Note: the input coordinates are in terms of the data array size,
 	 * not the displayed size of the image.
@@ -170,9 +176,17 @@ public class ArrayDataImageBundle
 	 * @param dataArrayY row number of the original data array
 	 * @return
 	 */
-	public String getDataArrayVal(int dataArrayY, int dataArrayX) { 
+	public String getDataArrayVal(int dataArrayY, int dataArrayX) 
+	{ 
 		queryX = dataArrayX; queryY = dataArrayY;
-		return getValInterface.getValue(); }
+		String val = getValInterface.getValue(); 
+		return val;
+	}
+
+	public String getDataArrayVal(int[] mouseCoord) 
+	{ 
+		return this.getDataArrayVal(mouseCoord[1], mouseCoord[0]); 
+	}
 
 	private void setDouble(double[][] data)
 	{
@@ -252,112 +266,111 @@ public class ArrayDataImageBundle
 	public String getDataType() { return this.dataType; }
 
 
-	@Deprecated
-	public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols)
-	{
-		int nIntColors = 10;
-		return createRandomPackage(nRows, nCols, nIntColors);
-	}
-
-	@Deprecated
-	public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols, int nIntColors)
-	{ return createRandomPackage(nRows, nCols, nIntColors, ColorUtils.HEAT_COLORS); }
-
-	@Deprecated
-	public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols, int nIntColors, Color[] colors)
-	{
-		Random r = new Random();
-		int[][] dat2 = new int[nCols][nRows];
-		for (int i = 0; i < dat2.length; i++) for (int j = 0; j < dat2[0].length; j++) dat2[i][j] = r.nextInt(nIntColors);
-		return new ArrayDataImageBundle(dat2, colors, "random data");
-	}
-
-
-	@Deprecated
-	public ArrayDataImageBundle(int[] datInt, ColorInterpolator ci2, String name) {
-		this.setCi(ci2);
-		int[][] out = new int[1][datInt.length];
-		for (int i = 0; i < out[0].length; i++) { out[0][i] = datInt[i]; }
-		setInt(out);
-	}
-
-	@Deprecated
-	public ArrayDataImageBundle(double[] data, ColorInterpolator ci, String name)
-	{
-		this.dataName = name;
-		this.setCi(ci);
-		double[][] out = new double[data.length - 1][1];
-		for (int i = 0; i < out.length; i++) { out[i][0] = data[i]; }
-		setDouble(out);
-	}
-
-	@Deprecated
-	public ArrayDataImageBundle(int[][] data, Color[] colors, Color naColor, int naInt, String name)
-	{
-		this.dataName = name;
-		this.na_color = naColor;
-		this.na_int = naInt;
-		int[] minMax = Sequences.minMax(data, naInt);
-		ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], naInt, naColor);
-		this.setCi(ci);	setInt(data);
-	}
-
-	@Deprecated
-	public ArrayDataImageBundle(double[][] data, Color[] colors, Color naColor, double naDouble, String name)
-	{
-		this.dataName = name;
-		this.na_double = naDouble;
-		this.na_color = naColor;
-		double[] minMax = Sequences.minMax(data, naDouble);
-		ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], na_double, na_color);
-		this.setCi(ci);	setDouble(data);
-	}
-
-	@Deprecated
-	public ArrayDataImageBundle(int[][] data, Color[] colors, String name) 
-	{ this(data, colors, Color.gray, Integer.MIN_VALUE, name); }
-
-	@Deprecated
-	public ArrayDataImageBundle(double[][] data, Color[] colors, Color na_color, String name) 
-	{	this(data, colors, na_color, Double.MIN_VALUE, name); }
-
-	@Deprecated
-	public ArrayDataImageBundle(double[][] data, ColorInterpolator ci)
-	{ this.setCi(ci); setDouble(data); }
-
-	@Deprecated
-	public ArrayDataImageBundle(int[][] data, ColorInterpolator ci)
-	{
-		this.dataType = "int";
-		this.setCi(ci);
-		this.dataInt = data;
-		this.width = data[0].length;
-		this.height = data.length;
-		setImage(this.dataInt);
-		getValInterface = () -> getIntVal();
-	}
-
-	@Deprecated
-	public static ArrayDataImageBundle createGradientBundle(ArrayDataImageBundle bundle, int nSteps)
-	{
-		/* In case of integer data, the number of color steps shouldn't be more than
-		 * the range of values used. */
-		if (bundle.dataInt != null)
-		{ 
-			int min = (int) bundle.getMinValue();
-			int max = (int) Math.ceil(bundle.getMaxValue());
-			nSteps = Math.min(
-					(int)bundle.getMaxValue() - (int)bundle.getMinValue() + 1, 
-					nSteps);
-			int[] datInt = Sequences.spacedIntervals(min, max, nSteps);
-			return new ArrayDataImageBundle(datInt, bundle.ci, bundle.dataName);
-		}
-
-		double[] data = Sequences.spacedIntervals(
-				bundle.getMinValue(), bundle.getMaxValue(), nSteps);
-		return new ArrayDataImageBundle(data, bundle.ci, bundle.dataName);
-	}
-
-	public String getDataArrayVal(int[] mouseCoord) { return this.getDataArrayVal(mouseCoord[1], mouseCoord[0]); }
-
 }
+
+//
+//@Deprecated
+//public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols)
+//{
+//	int nIntColors = 10;
+//	return createRandomPackage(nRows, nCols, nIntColors);
+//}
+//
+//@Deprecated
+//public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols, int nIntColors)
+//{ return createRandomPackage(nRows, nCols, nIntColors, ColorUtils.HEAT_COLORS); }
+//
+//@Deprecated
+//public static ArrayDataImageBundle createRandomPackage(int nRows, int nCols, int nIntColors, Color[] colors)
+//{
+//	Random r = new Random();
+//	int[][] dat2 = new int[nCols][nRows];
+//	for (int i = 0; i < dat2.length; i++) for (int j = 0; j < dat2[0].length; j++) dat2[i][j] = r.nextInt(nIntColors);
+//	return new ArrayDataImageBundle(dat2, colors, "random data");
+//}
+//
+//
+//@Deprecated
+//public ArrayDataImageBundle(int[] datInt, ColorInterpolator ci2, String name) {
+//	this.setCi(ci2);
+//	int[][] out = new int[1][datInt.length];
+//	for (int i = 0; i < out[0].length; i++) { out[0][i] = datInt[i]; }
+//	setInt(out);
+//}
+//
+//@Deprecated
+//public ArrayDataImageBundle(double[] data, ColorInterpolator ci, String name)
+//{
+//	this.dataName = name;
+//	this.setCi(ci);
+//	double[][] out = new double[data.length - 1][1];
+//	for (int i = 0; i < out.length; i++) { out[i][0] = data[i]; }
+//	setDouble(out);
+//}
+//
+//@Deprecated
+//public ArrayDataImageBundle(int[][] data, Color[] colors, Color naColor, int naInt, String name)
+//{
+//	this.dataName = name;
+//	this.na_color = naColor;
+//	this.na_int = naInt;
+//	int[] minMax = Sequences.minMax(data, naInt);
+//	ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], naInt, naColor);
+//	this.setCi(ci);	setInt(data);
+//}
+//
+//@Deprecated
+//public ArrayDataImageBundle(double[][] data, Color[] colors, Color naColor, double naDouble, String name)
+//{
+//	this.dataName = name;
+//	this.na_double = naDouble;
+//	this.na_color = naColor;
+//	double[] minMax = Sequences.minMax(data, naDouble);
+//	ColorInterpolator ci = new ColorInterpolator(colors, minMax[0], minMax[1], na_double, na_color);
+//	this.setCi(ci);	setDouble(data);
+//}
+//
+//@Deprecated
+//public ArrayDataImageBundle(int[][] data, Color[] colors, String name) 
+//{ this(data, colors, Color.gray, Integer.MIN_VALUE, name); }
+//
+//@Deprecated
+//public ArrayDataImageBundle(double[][] data, Color[] colors, Color na_color, String name) 
+//{	this(data, colors, na_color, Double.MIN_VALUE, name); }
+//
+//@Deprecated
+//public ArrayDataImageBundle(double[][] data, ColorInterpolator ci)
+//{ this.setCi(ci); setDouble(data); }
+//
+//@Deprecated
+//public ArrayDataImageBundle(int[][] data, ColorInterpolator ci)
+//{
+//	this.dataType = "int";
+//	this.setCi(ci);
+//	this.dataInt = data;
+//	this.width = data[0].length;
+//	this.height = data.length;
+//	setImage(this.dataInt);
+//	getValInterface = () -> getIntVal();
+//}
+//
+//@Deprecated
+//public static ArrayDataImageBundle createGradientBundle(ArrayDataImageBundle bundle, int nSteps)
+//{
+//	/* In case of integer data, the number of color steps shouldn't be more than
+//	 * the range of values used. */
+//	if (bundle.dataInt != null)
+//	{ 
+//		int min = (int) bundle.getMinValue();
+//		int max = (int) Math.ceil(bundle.getMaxValue());
+//		nSteps = Math.min(
+//				(int)bundle.getMaxValue() - (int)bundle.getMinValue() + 1, 
+//				nSteps);
+//		int[] datInt = Sequences.spacedIntervals(min, max, nSteps);
+//		return new ArrayDataImageBundle(datInt, bundle.ci, bundle.dataName);
+//	}
+//
+//	double[] data = Sequences.spacedIntervals(
+//			bundle.getMinValue(), bundle.getMaxValue(), nSteps);
+//	return new ArrayDataImageBundle(data, bundle.ci, bundle.dataName);
+//}

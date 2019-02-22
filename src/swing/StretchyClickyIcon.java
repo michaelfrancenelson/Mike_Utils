@@ -48,7 +48,6 @@ import images.ArrayDataImageBundle.ArrayDataImageFactory;
  */
 public class StretchyClickyIcon extends ImageIcon
 {
-
 	/* Constructors at the end of the file. */
 	/** */ private static final long serialVersionUID = 1L;
 
@@ -73,13 +72,13 @@ public class StretchyClickyIcon extends ImageIcon
 
 	private StretchyClickyIcon iconToMatch;
 	private boolean matchHeight;
-	
+
 	public void setMatchIcon(StretchyClickyIcon i)
 	{
 		matchHeight = true;
 		iconToMatch = i;
 	}
-	
+
 	public StretchyClickyIcon() {}
 
 	/**
@@ -133,7 +132,7 @@ public class StretchyClickyIcon extends ImageIcon
 		if (image == null) { return; }
 		Insets insets = ((Container) c).getInsets();
 		iconImgX = insets.left; iconImgY = insets.top;
-		
+
 		this.componentWidth = c.getWidth() - iconImgX - insets.right;
 		this.componentHeight = c.getHeight() - iconImgY - insets.bottom;
 		this.iconImgWidth = componentWidth; this.iconImgHeight = componentHeight;
@@ -171,15 +170,11 @@ public class StretchyClickyIcon extends ImageIcon
 			iconImgHeight = iconToMatch.iconImgHeight;
 			iconImgY = iconToMatch.iconImgY;
 		}
-		
+
 		this.currentDataPixelWidth = this.iconImgWidth / sourceImgWidth;
 		this.currentDataPixelHeight = this.iconImgHeight / sourceImgHeight;
 		g.drawImage(image, iconImgX, iconImgY, iconImgWidth, iconImgHeight, io == null ? c : io);
 	}
-	
-	
-	
-	
 
 	public int getImageDataNRows() { return sourceImgHeight; }
 	public int getImageDataNCols() { return sourceImgWidth; }
@@ -238,9 +233,7 @@ public class StretchyClickyIcon extends ImageIcon
 	}
 
 	private int[] imgClick(int[] xy)
-	{
-		return (new int[] {xy[0] - this.getX(), xy[1] - this.getY()});
-	}
+	{ return (new int[] {xy[0] - this.getX(), xy[1] - this.getY()}); }
 
 	public int[] getDataMouseCoords(MouseEvent arg0)
 	{
@@ -248,16 +241,14 @@ public class StretchyClickyIcon extends ImageIcon
 		int[] iconImgCoord = imgClick(compCoord);
 
 		double[] iconImgRatios = new double[]
-				{
-						boundedRatio(iconImgCoord[0], iconImgWidth),
+				{		boundedRatio(iconImgCoord[0], iconImgWidth),
 						boundedRatio(iconImgCoord[1], iconImgHeight)
 				};
 
 		int[] datArrayCoord = new int[]
-				{
-						Math.min(
-								sourceImgWidth - 1,
-								(int) (iconImgRatios[0] * (double) sourceImgWidth)),
+				{ 	Math.min(
+						sourceImgWidth - 1,
+						(int) (iconImgRatios[0] * (double) sourceImgWidth)),
 						Math.min(
 								sourceImgHeight - 1,
 								(int) (iconImgRatios[1] * (double) sourceImgHeight))
@@ -568,19 +559,19 @@ public class StretchyClickyIcon extends ImageIcon
 		JLabel label2 = new JLabel(icon2);
 		JLabel label3 = new JLabel(icon3);
 
-//		icon3.forceHeight = true;
-//		icon3.forcedHeight = 45;
-		
-//		label3.setForceHeight(true);
-//		label3.setForcedHeight(45);
-		
+		//		icon3.forceHeight = true;
+		//		icon3.forcedHeight = 45;
+
+		//		label3.setForceHeight(true);
+		//		label3.setForcedHeight(45);
+
 		frame.setLayout(new GridLayout());
 		frame.add(label1);
 		frame.add(label2);
 		frame.add(label3);
 		frame.setVisible(true);
-
 	}
+
 	public static void franceDemo()
 	{
 		JFrame frame = StretchyClickyDataJLabel.getFrame("StretchyClickyIcon image file demo");
@@ -597,8 +588,4 @@ public class StretchyClickyIcon extends ImageIcon
 		frame.add(label2);
 		frame.setVisible(true);
 	}
-
-
 }
-
-

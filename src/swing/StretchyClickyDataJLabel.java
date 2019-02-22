@@ -43,25 +43,24 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 	protected ArrayDataImageBundle imageDataBundle;
 	protected boolean verbose = false;
 
-	protected boolean addPoints = false;
-	protected int[] pointsDataArrayColumns, pointsDataArrayRows, pointsColorCodes;
-	protected Color pointColor;
-	private   double pointScale = 1.0;
+	protected boolean  addPoints = false;
+	protected int[]    pointsDataArrayColumns, pointsDataArrayRows, pointsColorCodes;
+	protected Color    pointColor;
+	private   double   pointScale = 1.0;
 
-	protected boolean addText = false;
-	protected int[] textDataArrayColumns, textDataArrayRows;
+	protected boolean  addText = false;
+	protected int[]    textDataArrayColumns, textDataArrayRows;
 	protected String[] textLabels;
-	protected Color textColor = Color.black;
-	protected Font font = DEFAULT_FONT;
+	protected Color    textColor = Color.black;
+	protected Font     font = DEFAULT_FONT;
 
 	protected ColorInterpolator ciPoints;
-	protected boolean colorMap = false;
+	protected boolean           colorMap = false;
 
 	protected boolean keepIconProportion;
-	protected int iconFixedWidth;
+	protected int     iconFixedWidth;
 
 	protected Double textOffsetY = null, textOffsetX = null;
-
 
 	protected MouseHoverData hover;
 
@@ -87,7 +86,6 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 		@Override public void mousePressed(MouseEvent arg0) {}
 		@Override public void mouseReleased(MouseEvent arg0) {}
 	};
-
 
 	/**
 	 * @param ap
@@ -147,17 +145,12 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 	}
 
 	public void updateBundle(ArrayDataImageBundle bundle)
-	{
-		this.imageDataBundle = bundle;
-		setIcon();
-	}
+	{ this.imageDataBundle = bundle; setIcon(); }
 
 	public void updateBundle(ArrayDataImageBundle bundle, StretchyClickyIcon icon)
-	{
-		this.imageDataBundle = bundle;
-		setIcon();
-		icon.setMatchIcon(icon);
-	}
+	{ 
+		this.imageDataBundle = bundle; 
+		setIcon(); icon.setMatchIcon(icon); }
 
 	private void setIcon() { setIcon(imageDataBundle.createIcon(this.keepIconProportion, this.iconFixedWidth)); }
 
@@ -232,10 +225,12 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 	}
 
 
-	public void drawTextValuesOnIcon(int[] dataArrayRows, int dataArrayColumn, Color color, Font font)
+	public void drawTextValuesOnIcon(
+			int[] dataArrayRows, int dataArrayColumn, Color color, Font font)
 	{
 		int[] dataArrayColumns = new int[dataArrayRows.length];
-		for (int i = 0; i < dataArrayColumns.length; i++) { dataArrayColumns[i] = dataArrayColumn;}
+		for (int i = 0; i < dataArrayColumns.length; i++) {
+			dataArrayColumns[i] = dataArrayColumn;}
 		drawTextValuesOnIcon(dataArrayRows, dataArrayColumns, color, font);
 	}
 
@@ -278,7 +273,6 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 			g.setColor(this.textColor);	
 			g.setFont(this.font);
 
-
 			int pixAdjX, pixAdjY;
 
 			pixAdjX = pixWidth / 2;
@@ -286,7 +280,6 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 
 			if (textOffsetX != null) pixAdjX += (int)(textOffsetX * ((double) pixWidth));
 			if (textOffsetY != null) pixAdjY += (int)(textOffsetY * ((double) pixHeight));
-
 
 			if (verbose) System.out.println("StretchyClickyDataJLabel: pixel adjust x: " + pixAdjX + ", pix adjust y: " + pixAdjY);
 
@@ -372,7 +365,8 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 				-9999);
 
 		legend = StretchyClickyDataJLabel.factory(
-				ArrayDataImageFactory.getVerticalGradientBundle(map.imageDataBundle, 100),
+				ArrayDataImageFactory.getVerticalGradientBundle(
+						map.imageDataBundle, 100),
 				false, legendWidth);
 
 		map.verbose = true; legend.verbose = true;
@@ -486,7 +480,6 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 
 		label1.addMouseMotionListener(label1);
 		label2.addMouseMotionListener(label2);
-
 	}
 
 	public static JFrame getFrame(String title)
@@ -512,7 +505,6 @@ public class StretchyClickyDataJLabel extends JLabel implements MouseMotionListe
 			String valMessage = imageDataBundle.getName() + " = " + hover.value;
 			System.out.println(dataArrayCoordMessage + valMessage);
 		}
-		//		System.out.println(dataArrayCoordMessage + valMessage);
 	}
 
 	public void setHoverPane(JTextPane pane) { hover.pane = pane; }
