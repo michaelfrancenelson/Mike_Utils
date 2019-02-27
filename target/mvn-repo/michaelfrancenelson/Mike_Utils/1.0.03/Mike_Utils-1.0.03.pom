@@ -9,16 +9,27 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<netcdf.version>4.3.23</netcdf.version>
+		<!-- <netcdf.version>4.6.11</netcdf.version> -->
 		<apache.poi.version>4.0.1</apache.poi.version>
-		<colt.version>1.2.0</colt.version>
 		<slf4j.version>2.11.0</slf4j.version>
 		<univocity-parsers.version>2.7.6</univocity-parsers.version>
+		<log4j.version>2.6.1</log4j.version>
 		<ssj.version>3.3.1</ssj.version>
 		<jdk.version>1.8</jdk.version>
-		<skipTests>true</skipTests>
 		<junit.version>4.12</junit.version>
+		<apache.commons.lang.version>3.7</apache.commons.lang.version>
+	<ucar.cdm.version>4.5.2</ucar.cdm.version>
+
+		<maven.site.plugin.version>3.7.1</maven.site.plugin.version>
+		<colt.version>1.2.0</colt.version>
+
+		<skipTests>true</skipTests>
+
 		<!-- github server corresponds to entry in ~/.m2/settings.xml -->
 		<github.global.server>github</github.global.server>
+		<maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
 	</properties>
 
 	<build>
@@ -47,12 +58,12 @@
 		<plugins>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>${maven.compiler.plugin.version}</version>
 				<configuration>
-					<source />
-					<target />
-					<skipTests>true</skipTests>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
 
@@ -64,43 +75,6 @@
 					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
-
-			<!-- <plugin> -->
-			<!-- <groupId>com.github.github</groupId> -->
-			<!-- <artifactId>site-maven-plugin</artifactId> -->
-			<!-- <version>3.7.1</version> -->
-			<!-- <configuration> -->
-			<!-- git commit message -->
-			<!-- <message>Maven artifacts for ${project.version}</message> -->
-			<!-- disable webpage processing -->
-			<!-- <noJekyll>true</noJekyll> -->
-			<!-- matches distribution management repository url above -->
-			<!-- <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> -->
-			<!-- remote branch name -->
-			<!-- <branch>refs/heads/mvn-repo</branch> -->
-<!-- 			If you remove this then the old artifact will be removed and new  -->
-<!-- 				one will replace. But with the merge tag you can just release by changing -->
-<!-- 			the version -->
-			
-			<!-- <merge>true</merge> -->
-			<!-- <includes> -->
-			<!-- <include>**/*</include> -->
-			<!-- </includes> -->
-			<!-- github repo name -->
-			<!-- <repositoryName>Mike_Utils</repositoryName> -->
-			<!-- github username -->
-			<!-- <repositoryOwner>michaelfrancenelson</repositoryOwner> -->
-			<!-- </configuration> -->
-			<!-- <executions> -->
-			<!-- <execution> -->
-			<!-- <goals> -->
-			<!-- <goal>site</goal> -->
-			<!-- </goals> -->
-			<!-- <phase>deploy</phase> -->
-			<!-- </execution> -->
-			<!-- </executions> -->
-			<!-- </plugin> -->
-
 		</plugins>
 
 	</build>
@@ -115,13 +89,30 @@
 
 	<dependencies>
 
-		<dependency> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-site-plugin -->
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-site-plugin</artifactId>
-			<version>3.7.1</version>
+
+		<!-- Don't add other log4j or slf4j dependencies -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${slf4j.version}</version>
 		</dependency>
 
-		<dependency> <!-- https://mvnrepository.com/artifact/junit/junit -->
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-site-plugin -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-site-plugin</artifactId>
+			<version>${maven.site.plugin.version}</version>
+			<!-- <version>3.7.1</version> -->
+		</dependency>
+
+		<!-- <dependency> https://mvnrepository.com/artifact/junit/junit -->
+		<!-- <groupId>junit</groupId> -->
+		<!-- <artifactId>junit</artifactId> -->
+		<!-- <version>${junit.version}</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
@@ -134,14 +125,6 @@
 			<groupId>ca.umontreal.iro.simul</groupId>
 			<artifactId>ssj</artifactId>
 			<version>${ssj.version}</version>
-		</dependency>
-
-		<dependency>
-			<!-- https://mvnrepository.com/artifact/com.univocity/univocity-parsers -->
-			<groupId>com.univocity</groupId>
-			<artifactId>univocity-parsers</artifactId>
-			<version>${univocity-parsers.version}</version>
-			<type>jar</type>
 		</dependency>
 
 		<dependency>
@@ -161,7 +144,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.7</version>
+			<version>${apache.commons.lang.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/colt/colt -->
@@ -171,18 +154,24 @@
 			<version>${colt.version}</version>
 		</dependency>
 
-		<!-- Don't add other log4j or slf4j dependencies -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>edu.ucar</groupId>
-			<artifactId>netcdfAll</artifactId>
-			<version>4.6.11</version>
+			<artifactId>cdm</artifactId>
+<!-- 			<artifactId>netcdf</artifactId> -->
+			<!-- <artifactId>netcdfAll</artifactId> -->
+			<version>${ucar.cdm.version}</version>
 		</dependency>
+
+		<dependency>
+			<!-- https://mvnrepository.com/artifact/com.univocity/univocity-parsers -->
+			<groupId>com.univocity</groupId>
+			<artifactId>univocity-parsers</artifactId>
+			<version>${univocity-parsers.version}</version>
+			<type>jar</type>
+		</dependency>
+
+
 
 	</dependencies>
 
