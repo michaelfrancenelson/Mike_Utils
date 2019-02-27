@@ -6,7 +6,6 @@ import com.univocity.parsers.common.processor.BeanWriterProcessor;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 
-@Deprecated
 public class CSVBeanReporter<T> extends ObjectReporter<T>
 {
 	private int simulationID;

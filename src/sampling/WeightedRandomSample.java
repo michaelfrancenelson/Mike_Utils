@@ -1,5 +1,8 @@
 package sampling;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import search.Binary;
 import umontreal.ssj.randvar.UniformGen;
 import umontreal.ssj.randvar.UniformIntGen;
@@ -7,6 +10,8 @@ import umontreal.ssj.rng.RandomStream;
 
 /** Randomly choose elements from collections with possibly different probabilities associated with each item in the collection. */
 public class WeightedRandomSample {
+	
+	static Logger logger = LoggerFactory.getLogger(WeightedRandomSample.class);
 	
 	/** Choose an index from an array with the provided probability weights.
 	 *  <br> Weights do not need to sum to 1.
@@ -27,6 +32,8 @@ public class WeightedRandomSample {
 		/* In case there is zero weight, choose an index uniformly. */
 		if (sum <= 0)
 		{
+			logger.debug("Zero weight, choosing an index uniformly");
+			if (weights.length == 0) throw new IllegalArgumentException("Weight array must contain at least one entry.");
 			return UniformIntGen.nextInt(rs, 0, weights.length - 1);
 		}
 		double key = UniformGen.nextDouble(rs, 0.0, sum);
@@ -70,6 +77,7 @@ public class WeightedRandomSample {
 		/* In case there is zero weight, choose an index uniformly. */
 		if (sum <= 0) 
 			{
+			logger.debug("Zero weight, choosing an index uniformly");
 			return UniformIntGen.nextInt(rs, 0, weights.length - 1);
 			}
 		double key = UniformGen.nextDouble(rs, 0, sum);

@@ -89,12 +89,6 @@ public class ArrayDataImageBundle
 			return out;
 		}
 
-//		/** Get an image bundle for 1D int data. */
-//		public static ArrayDataImageBundle getBundle(
-//				int[] data, 
-//				String name, ColorInterpolator ci, 
-//				double naDouble, int naInt, Color naColor)
-		
 		public static ArrayDataImageBundle getBundle(
 				int[] data, 
 				String name, ColorInterpolator ci, 
