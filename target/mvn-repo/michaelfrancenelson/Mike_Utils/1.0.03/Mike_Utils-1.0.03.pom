@@ -20,8 +20,8 @@
 		<jdk.version>1.8</jdk.version>
 		<junit.version>4.12</junit.version>
 		<apache.commons.lang.version>3.7</apache.commons.lang.version>
-	<ucar.cdm.version>4.5.2</ucar.cdm.version>
 
+	<ucar.cdm.version>4.5.2</ucar.cdm.version>
 		<maven.site.plugin.version>3.7.1</maven.site.plugin.version>
 		<colt.version>1.2.0</colt.version>
 
@@ -157,10 +157,11 @@
 
 		<dependency>
 			<groupId>edu.ucar</groupId>
-			<artifactId>cdm</artifactId>
-<!-- 			<artifactId>netcdf</artifactId> -->
+<!-- 			<artifactId>cdm</artifactId> -->
+			<artifactId>netcdf</artifactId>
 			<!-- <artifactId>netcdfAll</artifactId> -->
-			<version>${ucar.cdm.version}</version>
+<!-- 			<version>${ucar.cdm.version}</version> -->
+			<version>${netcdf.version}</version>
 		</dependency>
 
 		<dependency>
