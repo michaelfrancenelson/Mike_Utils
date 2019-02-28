@@ -5,12 +5,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -31,6 +35,12 @@ import com.univocity.parsers.csv.CsvWriterSettings;
  *  @author michaelfrancenelson
  */
 public class ObjectReader {
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	public static @interface FieldColumn{String column();};
+	@Retention(RetentionPolicy.RUNTIME)
+	public static @interface FieldColumnGetter{String column();};
+	
 	/** represents the value of non-initialized fields. */
 	public static final int NON_INITIALIZED_INT = Integer.MIN_VALUE;
 	/** represents the value of non-initialized fields. */
@@ -40,6 +50,88 @@ public class ObjectReader {
 	/** Allows the isInitialized() methods to verify that the objects were corretly initialized form the input files. */
 	@Retention(RetentionPolicy.RUNTIME) public static @interface Initialized {}
 
+
+	public static <T, A extends Annotation> List<Method> 
+	getAnnotatedMethods(Class<T> classT, Class<A> classA)
+	{
+		Method[] mm = classT.getMethods();
+		List<Method> ml = new ArrayList<>();
+
+		for (Method m : mm)
+		{
+			if (m.isAnnotationPresent(classA)) 
+			{
+				ml.add(m);
+			}
+		}
+		return ml;
+	}
+	
+	public static <T, A extends FieldColumnGetter> 
+	List<Function<T, String>>
+	getReporterFunctions(Class<T> t, Class<A> a, String dblFmt)
+	{
+		List<Method> ml = getAnnotatedMethods(t, a);
+		List<Function<T, String>> out = new ArrayList<>();
+		try {
+			for (Method m : ml)
+				out.add(getStringGetter(m, t, dblFmt));
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return out;
+	}
+	
+	public static <T> Function<T, String> 
+	//	public static <T extends ObjectReporter2> Function<T, String> 
+	getStringGetter(Method m, Class<T> t, String dblFmt) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	{
+		Function<T, String> func;
+		String returnType = m.getReturnType().getSimpleName();
+		switch(returnType)
+		{
+		case("int"):
+			func = (tt) -> { 
+				try {return String.format("%d", m.invoke(tt));}
+				catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
+				return null;
+			}; break;
+		case("double"):
+			func = (tt) -> { 
+				try {return String.format(dblFmt, m.invoke(tt));}
+				catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
+				return null;
+			}; break;
+
+		default:
+			func = (tt) -> { 
+				try {return String.format("%s", m.invoke(tt));}
+				catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
+				return null;
+			}; break;
+		}
+		return func;
+	}
+	public static <T, A extends FieldColumnGetter> String[] 
+			getColumnHeaders(Class<T> t, Class<A> a, String... additionalColumnHeaders)
+	{
+		List<Method> ml = getAnnotatedMethods(t, a);
+		String[] out = new String[ml.size() + additionalColumnHeaders.length];
+		int i = 0;
+		for (Method m : ml)
+		{
+			out[i] = m.getAnnotation(a).column();
+			i++;
+		}
+		
+		for (String s : additionalColumnHeaders)
+		{
+			out[i] = s; i++;
+		}
+		return out;
+	}
+	
+	
 	/** Test cases on ForetClassicSpecies and JaBoWaParameters */
 	public static void _main(String[] args) throws IllegalArgumentException, IllegalAccessException 
 	{

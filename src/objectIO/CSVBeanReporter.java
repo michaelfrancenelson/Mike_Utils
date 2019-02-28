@@ -6,6 +6,7 @@ import com.univocity.parsers.common.processor.BeanWriterProcessor;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 
+@Deprecated
 public class CSVBeanReporter<T> extends ObjectReporter<T>
 {
 	private int simulationID;
@@ -13,6 +14,7 @@ public class CSVBeanReporter<T> extends ObjectReporter<T>
 	
 	public static <T> CSVBeanReporter<T> factory(Class<T> clazz, int simulationID)
 	{ return factory(clazz, simulationID, ""); }
+	
 	public static <T> CSVBeanReporter<T> factory(Class<T> clazz, int runID, String... additionalColumnNames)
 	{ 
 		CSVBeanReporter<T> out = new CSVBeanReporter<T>(); // factory(clazz, "runID", "timeStep");

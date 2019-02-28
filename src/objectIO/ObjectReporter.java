@@ -13,11 +13,14 @@ import com.univocity.parsers.common.processor.BeanWriterProcessor;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 
+import objectIO.ObjectReader.FieldColumnGetter;
+
 /**
  *  @author michaelfrancenelson
  *
  */
-public class ObjectReporter<T> {
+public class ObjectReporter<T>
+{
 
 	protected BeanWriterProcessor<T> processor;
 	protected List<String> outputFileHeaderList;
@@ -29,8 +32,8 @@ public class ObjectReporter<T> {
 
 	public ObjectReporter() {}
 
-	public static <T> ObjectReporter<T> factory(Class<T> clazz, String... additionalColumnNames)
-//	public static <T> ObjectReporter<T, S extends Object> factory(Class<T> clazz, String... additionalColumnNames)
+	public static <T, A extends FieldColumnGetter> ObjectReporter<T> 
+	factory(Class<T> clazz, String... additionalColumnNames)
 	{
 		ObjectReporter<T> out = new ObjectReporter<>();
 		out.clazz = clazz;
