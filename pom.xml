@@ -18,7 +18,9 @@
 		<log4j.version>2.6.1</log4j.version>
 		<ssj.version>3.3.1</ssj.version>
 		<jdk.version>1.8</jdk.version>
+
 		<junit.version>4.12</junit.version>
+
 		<apache.commons.lang.version>3.7</apache.commons.lang.version>
 
 		<ucar.cdm.version>4.5.2</ucar.cdm.version>
@@ -157,10 +159,7 @@
 
 		<dependency>
 			<groupId>edu.ucar</groupId>
-			<!-- <artifactId>cdm</artifactId> -->
 			<artifactId>netcdf</artifactId>
-			<!-- <artifactId>netcdfAll</artifactId> -->
-			<!-- <version>${ucar.cdm.version}</version> -->
 			<version>${netcdf.version}</version>
 		</dependency>
 

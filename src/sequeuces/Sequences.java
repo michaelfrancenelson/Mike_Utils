@@ -57,11 +57,6 @@ public class Sequences {
 		printSequence(spacedIntervals(49, 51, 6), "%d");
 	}
 
-
-
-	
-
-
 	/**
 	 * 
 	 * @param x
