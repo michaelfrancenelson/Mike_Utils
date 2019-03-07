@@ -22,7 +22,7 @@ ver=1.0.02
 group=michaelfrancenelson
 repfile=C:/github/MikeUtilsJava2/target/mvn-repo/$group/MikeUtilsJava2/$ver/MikeUtilsJava2-$ver.jar
 
-mvn install:install-file -DgroupId=group -DartifactId=Mike_Utils -Dversion=$ver -Dfile=$repfile -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=. -DcreateChecksum=true
+mvn install:install-file -DgroupId=$group -DartifactId=Mike_Utils -Dversion=$ver -Dfile=$repfile -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=. -DcreateChecksum=true
 
 
 mvn install:install-file -DgroupId=michaelfrancenelson -DartifactId=Mike_Utils -Dversion=1.0.02 -Dfile=C:/github/MikeUtilsJava2/target/mvn-repo/michaelfrancenelson/MikeUtilsJava2/1.0.02/MikeUtilsJava2-1.0.02.jar -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=.  -DcreateChecksum=true
@@ -35,4 +35,10 @@ git push origin repository
 mvn install:install-file -DgroupId=YOUR_GROUP -DartifactId=YOUR_ARTIFACT -Dversion=YOUR_VERSION -Dfile=YOUR_JAR_FILE -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=.  -DcreateChecksum=true
 
 
+ver=1.0.1a
+group=LightweightJavaUtils
+artifactid=LightweightJavaUtils
+repfile=C:/Users/eeeki/eclipse-workspace/LightweightJavaUtils/target/LightweightJavaUtils-1.0.1a.jar
+
+mvn install:install-file -DgroupId=$group -DartifactId=$artifactid -Dversion=$ver -Dfile=$repfile -Dpackaging=jar -DgeneratePom=true -DlocalRepositoryPath=. -DcreateChecksum=true
 
