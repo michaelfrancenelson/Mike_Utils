@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
+import _swing.ColorUtils;
+import _swing.StretchyClickyIcon;
 import sequeuces.Sequences;
-import swing.ColorUtils;
-import swing.StretchyClickyIcon;
 
 public class ArrayDataImageBundle 
 {

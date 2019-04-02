@@ -1,7 +1,7 @@
 /**
  * @(#)StretchIcon.java	1.0 03/27/12
  */
-package swing;
+package _swing;
 
 import java.awt.Component;
 import java.awt.Container;
